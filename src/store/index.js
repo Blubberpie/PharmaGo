@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import Auth from './auth';
+
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
   },
   mutations: {
@@ -11,5 +13,9 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
+    auth: { ...Auth, namespaced: true },
   },
 });
+
+Vue.$store = store;
+export default store;
