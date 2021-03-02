@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
+    <!-- <v-app-bar
       app
       color="primary"
       dark
@@ -35,22 +35,23 @@
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
-      <HelloWorld/>
+      <Register/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+// import HelloWorld from './components/HelloWorld.vue';
+import Register from './components/Register.vue';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    Register,
   },
 
   data: () => ({

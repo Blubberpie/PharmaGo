@@ -1,4 +1,4 @@
-// import '@/plugins/firebase';
+import '@/plugins/firebase';
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
 import Vue from 'vue';
