@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-// const Login = () => import('@/components/Login.vue');
+const Login = () => import('@/components/Login.vue');
 const About = () => import('../views/About.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 
@@ -16,14 +16,14 @@ const routes = [
       requiredAuthentication: false, // CHANGE LATER
     },
   },
-  // {
-  //   path: '/login',
-  //   name: 'login',
-  //   component: Login,
-  //   meta: {
-  //     requiredAuthentication: false,
-  //   },
-  // },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    meta: {
+      requiredAuthentication: false,
+    },
+  },
   {
     path: '/about',
     name: 'About',
