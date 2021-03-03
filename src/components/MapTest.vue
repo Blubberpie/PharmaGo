@@ -26,7 +26,7 @@ export default {
       this.google = await loader.load();
       const bangkok = { lat: 13.7563, lng: 100.5018 };
       this.map = new this.google.maps.Map(document.getElementById('map'), {
-        center: bangkok, 
+        center: bangkok,
         zoom: 13,
       });
 
