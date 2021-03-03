@@ -1,16 +1,20 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+// import Home from '../views/Home.vue';
 
 // const Login = () => import('@/components/Login.vue');
+const MapTest = () => import('@/components/MapTest.vue');
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
+    path: '/maptest',
+    name: 'maptest',
+    component: MapTest,
+    meta: {
+      requiredAuthentication: false,
+    },
   },
   // {
   //   path: '/login',
@@ -31,7 +35,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
 });
@@ -50,6 +54,6 @@ const router = new VueRouter({
 
 // router.beforeEach(beforeRouteEnter);
 
-// Vue.$router = router;
+Vue.$router = router;
 
 export default router;
