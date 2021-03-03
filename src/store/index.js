@@ -6,12 +6,9 @@ import Auth from './auth';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+  state: {},
+  mutations: {},
+  actions: {},
   modules: {
     auth: { ...Auth, namespaced: true },
   },

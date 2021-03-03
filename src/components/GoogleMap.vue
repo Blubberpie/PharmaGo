@@ -6,7 +6,7 @@
 import { Loader } from 'google-maps';
 
 export default {
-  name: 'MapTest',
+  name: 'GoogleMap',
   data() {
     return {
       google: null,
@@ -67,24 +67,27 @@ export default {
       this.createMarkers();
     },
     createMarkers() {
-      this.fakePharmacies.forEach((pharm) => {
+      this.fakePharmacies.forEach((pharmacy) => {
         const newMarker = new this.google.maps.Marker({
-          position: pharm.position,
+          position: pharmacy.position,
           map: this.map,
         });
         newMarker.addListener('click', () => {
-          this.map.setZoom(18);
-          this.map.setCenter(newMarker.getPosition());
-          // TODO More click events here
+          this.handleMarkerClick(pharmacy, newMarker);
         });
         this.markers.push(
           {
-            id: pharm.id,
-            name: pharm.name,
+            id: pharmacy.id,
+            name: pharmacy.name,
             marker: newMarker,
           },
         );
       });
+    },
+    handleMarkerClick(pharmacy, marker) {
+      this.map.setZoom(18);
+      this.map.setCenter(marker.getPosition());
+      this.$emit('handleMarkerClick', pharmacy);
     },
   },
 };
