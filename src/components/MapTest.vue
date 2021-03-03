@@ -11,6 +11,8 @@ export default {
     return {
       google: null,
       map: null,
+      marker: null,
+      marker2: null,
     };
   },
   mounted() {
@@ -26,6 +28,16 @@ export default {
       this.map = new this.google.maps.Map(document.getElementById('map'), {
         center: bangkok,
         zoom: 13,
+      });
+
+      this.marker = new this.google.maps.Marker({
+        position: bangkok,
+        map: this.map,
+      });
+
+      this.marker2 = new this.google.maps.Marker({
+        position: { lat: 13.7466, lng: 100.5393 },
+        map: this.map,
       });
     },
   },
