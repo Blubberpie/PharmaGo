@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 
 const Login = () => import('@/components/Login.vue');
 const About = () => import('../views/About.vue');
+const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 
 Vue.use(VueRouter);
@@ -33,6 +34,14 @@ const routes = [
 
     // component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     component: About,
+  },
+  {
+    path: '/chat',
+    name: 'chat',
+    component: ChatPage,
+    meta: {
+      requiredAuthentication: false, // CHANGE LATER
+    },
   },
 ];
 
