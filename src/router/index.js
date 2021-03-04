@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 const Login = () => import('@/components/Login.vue');
+const Register = () => import('@/components/Register.vue');
 const About = () => import('../views/About.vue');
 const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
@@ -41,6 +42,14 @@ const routes = [
     component: ChatPage,
     meta: {
       requiredAuthentication: false, // CHANGE LATER
+    },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    meta: {
+      requiredAuthentication: false,
     },
   },
 ];
