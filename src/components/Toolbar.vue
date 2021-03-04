@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <nav>
     <v-toolbar
       flat
+      app
     >
-      <v-toolbar-title >PharmaGo</v-toolbar-title>
+      <v-toolbar-title>PharmaGo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class= "ma-5" text @onclick="home">Home</v-btn>
+      <v-btn class= "ma-5" text to="/">Home</v-btn>
       <v-menu
+      transition="slide-y-transition"
       open-on-hover
       bottom
       offset-y
@@ -33,16 +35,18 @@
         </v-list-item>
       </v-list>
       </v-menu>
-      <v-btn class= "ma-5" color="secondary" @click='toLogin' v-if="!userLogedIn">
+      <v-btn class= "ma-5" color="secondary" to="/login" v-if="!userLogedIn">
+          <span>Login</span>
           <v-icon>
               mdi-login
           </v-icon>
-          Login</v-btn>
-     <v-btn color="secondary" @click='toRegister' v-if="!userLogedIn">
+          </v-btn>
+     <v-btn color="secondary" to="/register" v-if="!userLogedIn">
+          <span>Register</span>
           <v-icon>
               mdi-account
           </v-icon>
-          Register</v-btn>
+          </v-btn>
           <v-btn class="hidden-xs-only" v-if="userLogedIn"
           text @click='logoutFromFirebase'
           >
@@ -56,7 +60,7 @@
           <v-icon right>mdi-logout</v-icon>
         </v-btn>
     </v-toolbar>
-  </div>
+  </nav>
 </template>
 <script>
 export default {
@@ -85,15 +89,6 @@ export default {
     // },
     logoutFromFirebase() {
       this.$store.dispatch('signOutAction');
-      this.$router.push('/');
-    },
-    toLogin() {
-      this.$router.push('/Login');
-    },
-    toRegister() {
-      this.$router.push('/Register');
-    },
-    home() {
       this.$router.push('/');
     },
   },

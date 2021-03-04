@@ -1,18 +1,18 @@
 <template>
   <div>
-    <Toolbar />
-    <h1>hi</h1>
+    <v-img
+    contain
+    class="my-5"
+    src="https://media.discordapp.net/attachments/755289982284988426/816289907936854026/become-medical-sales-rep.jpg">
+    <!-- <v-btn bottom left>Look for Pharmacy near you</v-btn> -->
+    </v-img>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Toolbar from '@/components/Toolbar.vue';
 
 export default {
   name: 'Home',
-  components: {
-    Toolbar,
-  },
 };
 </script>
