@@ -1,13 +1,15 @@
 <template>
-  <div class="home">
-    <!-- Provides the application the proper gutter -->
+  <div>
     <v-container>
-      <v-btn color="secondary" @click="drawer = true">
+      <!-- <v-btn color="secondary" @click="drawer = true">
         open drawer
-      </v-btn>
+      </v-btn> -->
+      <GoogleMap
+        @handleMarkerClick="showPharmacyInfo"
+      />
       <v-navigation-drawer v-model="drawer" :width="400" absolute bottom temporary right>
         <v-sheet>
-          <h1 align="center" style="margin: 25px">Header</h1>
+          <h1 align="center" style="margin: 25px">{{ currentPharmacyName }}</h1>
           <p align="center" style="margin: 25px">
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
             has been the industry's standard dummy text ever since the 1500s, when an unknown
@@ -21,63 +23,34 @@
             <v-btn color="secondary">
               Chat
             </v-btn>
-            <v-btn color="primary">
-              Info
-            </v-btn>
           </v-row>
         </v-sheet>
       </v-navigation-drawer>
-      <v-row align="center" justify="center" style="font-size: 40px;">
-        WELLCOME {{ name }} !!!</v-row
-      >
     </v-container>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue';
+import GoogleMap from './GoogleMap.vue';
 
 export default {
   name: 'Home',
   components: {
-    // HelloWorld,
+    GoogleMap,
   },
   data() {
     return {
-      pharmacices: [
-        {
-          name: 'Place',
-          location: 'Location 1',
-        },
-        // {
-        //   name: 'Holder',
-        //   location: 'Location 2',
-        // },
-        // {
-        //   name: 'Pharmacy',
-        //   location: 'Location 3',
-        // },
-        // {
-        //   name: 'Name',
-        //   location: 'Location 4',
-        // },
-        // {
-        //   name: 'Even',
-        //   location: 'Location 5',
-        // },
-        // {
-        //   name: 'More',
-        //   location: 'Location 6',
-        // },
-        // {
-        //   name: 'Names',
-        //   location: 'Location 7',
-        // },
-      ],
-      name: 'Place holder user',
+      currentPharmacyId: -1,
+      currentPharmacyName: '',
       drawer: false,
     };
+  },
+  methods: {
+    showPharmacyInfo(pharmacy) {
+      this.currentPharmacyId = pharmacy.id;
+      this.currentPharmacyName = pharmacy.name;
+      this.drawer = true;
+    },
   },
 };
 </script>
