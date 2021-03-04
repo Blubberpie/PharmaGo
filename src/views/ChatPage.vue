@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h1>This is an Chat page</h1>
     <v-container>
-      <Chat></Chat>
+      <Chat />
+    </v-container>
+    <v-container>
       <v-navigation-drawer :width="400" absolute permanent right>
         <v-sheet>
           <h1 align="center" style="margin: 25px">Pharmacy name</h1>
