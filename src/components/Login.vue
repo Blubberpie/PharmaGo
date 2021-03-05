@@ -58,7 +58,7 @@ export default {
           (userCredential) => {
             const { user } = userCredential;
             this.$store.dispatch('auth/setAuthenticatedUser', user);
-            this.$router.push('home');
+            this.$router.push('/');
           },
           (err) => {
             this.errorMessage = err.message;

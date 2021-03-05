@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import firebase from 'firebase/app';
 
-// import Auth from './auth';
+import Auth from './auth';
 
 Vue.use(Vuex);
 
@@ -13,7 +13,9 @@ const store = new Vuex.Store({
     user: null,
     status: null,
     error: null,
-
+  },
+  modules: {
+    auth: { ...Auth, namespaced: true },
   },
   mutations: {
 
