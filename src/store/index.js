@@ -3,11 +3,11 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import firebase from 'firebase';
 
-import Auth from './auth';
+// import Auth from './auth';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
 
   state: {
     user: null,

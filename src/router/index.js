@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-const Login = () => import('@/components/Login.vue');
+// const Login = () => import('@/components/Login.vue');
 const Register = () => import('@/components/Register.vue');
-const About = () => import('../views/About.vue');
+// const About = () => import('../views/About.vue');
 const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 const Home = () => import('../views/Home.vue');
@@ -19,14 +19,14 @@ const routes = [
       requiredAuthentication: false, // CHANGE LATER
     },
   },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login,
-    meta: {
-      requiredAuthentication: false,
-    },
-  },
+  // {
+  //   path: '/login',
+  //   name: 'login',
+  //   component: Login,
+  //   meta: {
+  //     requiredAuthentication: false,
+  //   },
+  // },
   {
     path: '/',
     name: 'home',
