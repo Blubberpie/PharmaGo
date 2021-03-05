@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <v-toolbar
+    <v-app-bar
       flat
       app
     >
@@ -60,7 +60,7 @@
           <span>Sign Out</span>
           <v-icon right>mdi-logout</v-icon>
         </v-btn>
-    </v-toolbar>
+    </v-app-bar>
   </nav>
 </template>
 <script>
