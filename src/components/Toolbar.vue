@@ -6,6 +6,7 @@
     >
       <v-toolbar-title>PharmaGo</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn class= "ma-5" text to="/map">Customer Map (for testing)</v-btn>
       <v-btn class= "ma-5" text to="/">Home</v-btn>
       <v-menu
       transition="slide-y-transition"
