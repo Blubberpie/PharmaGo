@@ -47,6 +47,13 @@ export default {
       types: ['Customer', 'Pharmacy', 'Driver'],
     };
   },
+  created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push({ name: 'home' });
+      }
+    });
+  },
   methods: {
     async Register() {
       try {

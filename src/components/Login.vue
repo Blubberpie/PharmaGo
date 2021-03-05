@@ -32,6 +32,13 @@ export default {
       errorMessage: '',
     };
   },
+  created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push({ name: 'home' });
+      }
+    });
+  },
   methods: {
     loginWithEmail(e) {
       firebase
@@ -41,7 +48,7 @@ export default {
           (userCredential) => {
             const { user } = userCredential;
             this.$store.dispatch('auth/setAuthenticatedUser', user);
-            this.$router.push('home');
+            this.$router.push({ name: 'home' });
           },
           (err) => {
             this.errorMessage = err.message;
@@ -58,7 +65,7 @@ export default {
           (userCredential) => {
             const { user } = userCredential;
             this.$store.dispatch('auth/setAuthenticatedUser', user);
-            this.$router.push('/');
+            this.$router.push({ name: 'home' });
           },
           (err) => {
             this.errorMessage = err.message;
