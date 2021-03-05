@@ -16,3 +16,11 @@ export default {
   name: 'Home',
 };
 </script>
+
+<style scoped>
+.card {
+  padding: 10px;
+  flex: 1;
+  /* border-radius: 20px; */
+}
+</style>

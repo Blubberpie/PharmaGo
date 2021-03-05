@@ -3,6 +3,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import firebase from 'firebase';
 
+import Auth from './auth';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -144,3 +146,6 @@ export default new Vuex.Store({
     },
   },
 });
+
+Vue.$store = store;
+export default store;
