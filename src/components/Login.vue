@@ -3,7 +3,7 @@
     <v-row>
       <v-spacer/>
       <v-col
-        cols="15"
+        cols="12"
         sm="10"
         md="7"
       >
@@ -18,13 +18,12 @@
           type="password"
           placeholder="Enter your password here"
           @keyup.enter="doLogin"
-          autofocus
         />
         <p class="error-text" if="errorMessage">{{ errorMessage }}</p>
         <v-row class="pl-4 pr-4">
           <v-btn color="secondary" @click="goRegister">Create a New Account</v-btn>
           <v-spacer/>
-          <v-btn color="primary" @click="doLogin">Confirm</v-btn>
+          <v-btn color="secondary" @click="doLogin">Confirm</v-btn>
         </v-row>
       </v-col>
       <v-spacer/>
@@ -33,6 +32,9 @@
 </template>
 
 <script>
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 export default {
   name: 'Login',
   data() {
@@ -43,12 +45,28 @@ export default {
     };
   },
   created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push({ name: 'home' });
+      }
+    });
   },
   methods: {
     doLogin() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then((userCredential) => {
+          const { user } = userCredential;
+          this.$store.dispatch('auth/setAuthenticatedUser', user);
+          this.$router.push({ name: 'home' });
+        },
+        (err) => {
+          this.errorMessage = err.message;
+        });
     },
     goRegister() {
-      this.$router.push({ name: 'Register' });
+      this.$router.push({ name: 'register' });
     },
   },
 };
@@ -56,7 +74,7 @@ export default {
 
 <style>
   .large-title {
-    color: #00a2e1;
+    color: #6C9FAA;
     text-align: center;
     padding-top: 3rem;
     padding-bottom: 3rem;
