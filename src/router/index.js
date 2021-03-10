@@ -7,6 +7,7 @@ const Register = () => import('@/components/Register.vue');
 const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 const Home = () => import('../views/Home.vue');
+const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
 
 Vue.use(VueRouter);
 
@@ -39,6 +40,14 @@ const routes = [
     path: '/chat',
     name: 'chat',
     component: ChatPage,
+    meta: {
+      requiredAuthentication: false, // CHANGE LATER
+    },
+  },
+  {
+    path: '/prescription',
+    name: 'prescription',
+    component: PrescriptionPage,
     meta: {
       requiredAuthentication: false, // CHANGE LATER
     },
