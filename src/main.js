@@ -1,6 +1,7 @@
 import '@/plugins/firebase';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -10,15 +11,19 @@ import vuetify from './plugins/vuetify';
 Vue.config.productionTip = false;
 
 let isInitialized = false;
+const database = firebase.database();
 
 // Persist user
 new Promise((resolve) => {
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       Vue.$store.dispatch('auth/setAuthenticatedUser', user);
+      const userCredRef = database.ref(`/user/${user.uid}/credentials/`);
+      userCredRef.once('value', (credSnap) => {
+        Vue.$store.dispatch('auth/setAuthenticatedUserRole', credSnap.val().role);
+      });
     } else {
-      Vue.$store.dispatch('auth/setAuthenticatedUser', user);
-      Vue.$router.push({ name: 'login' }).catch(() => {});
+      Vue.$router.push({ name: 'home' }).catch(() => {});
     }
     if (!isInitialized) {
       resolve();

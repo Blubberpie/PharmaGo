@@ -34,6 +34,9 @@
 <script>
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
+
+const database = firebase.database();
 
 export default {
   name: 'Login',
@@ -59,6 +62,10 @@ export default {
         .then((userCredential) => {
           const { user } = userCredential;
           this.$store.dispatch('auth/setAuthenticatedUser', user);
+          this.userCredRef = database.ref(`/user/${user.uid}/credentials/`);
+          this.userCredRef.once('value', (credSnap) => {
+            this.$store.dispatch('auth/setAuthenticatedUserRole', credSnap.val().role);
+          });
           // this.$router.push({ name: 'home' }); // This is handled at created()
         },
         (err) => {

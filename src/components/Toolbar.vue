@@ -54,9 +54,7 @@
               mdi-account
           </v-icon>
           </v-btn>
-          <v-btn class="hidden-xs-only" v-if="loggedIn"
-          text @click='logoutFromFirebase'
-          >
+          <v-btn class="hidden-xs-only" v-if="loggedIn" text>
           <span>Account</span>
           <v-icon right>mdi-account</v-icon>
         </v-btn>
@@ -71,17 +69,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import 'firebase/database';
-
-const database = firebase.database();
 
 export default {
   data: () => ({
     loggedIn: false,
     userCredRef: null,
-    userRole: null,
     tools: [
       { title: 'About' },
       { title: 'Service' },
@@ -94,13 +89,14 @@ export default {
       { title: 'Click Me 2' },
     ],
   }),
+  computed: {
+    ...mapState({
+      userRole: (state) => state.auth.userRole,
+    }),
+  },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       this.loggedIn = user;
-    });
-    this.userCredRef = database.ref(`/user/${this.$store.state.auth.user.uid}/credentials/`);
-    this.userCredRef.once('value', (credSnap) => {
-      this.userRole = credSnap.val().role;
     });
   },
   methods: {

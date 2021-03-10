@@ -103,6 +103,7 @@ export default {
             (cred) => {
               const { user } = cred;
               this.$store.dispatch('auth/setAuthenticatedUser', user);
+              this.$store.dispatch('auth/setAuthenticatedUserRole', this.role);
               database.ref(`/user/${cred.user.uid}`).set({
                 credentials: {
                   username: this.username,
