@@ -36,25 +36,25 @@
         </v-list-item>
       </v-list>
       </v-menu>
-      <v-btn class= "ma-5" color="secondary" to="/login" v-if="!userLogedIn">
+      <v-btn class= "ma-5" color="secondary" to="/login" v-if="!loggedIn">
           <span>Login</span>
           <v-icon>
               mdi-login
           </v-icon>
           </v-btn>
-     <v-btn color="secondary" to="/register" v-if="!userLogedIn">
+     <v-btn color="secondary" to="/register" v-if="!loggedIn">
           <span>Register</span>
           <v-icon>
               mdi-account
           </v-icon>
           </v-btn>
-          <v-btn class="hidden-xs-only" v-if="userLogedIn"
+          <v-btn class="hidden-xs-only" v-if="loggedIn"
           text @click='logoutFromFirebase'
           >
           <span>Account</span>
           <v-icon right>mdi-account</v-icon>
         </v-btn>
-        <v-btn class="hidden-xs-only" v-if="userLogedIn"
+        <v-btn class="hidden-xs-only" v-if="loggedIn"
           text @click='logoutFromFirebase'
           >
           <span>Sign Out</span>
@@ -63,9 +63,14 @@
     </v-app-bar>
   </nav>
 </template>
+
 <script>
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 export default {
   data: () => ({
+    loggedIn: false,
     tools: [
       { title: 'About' },
       { title: 'Service' },
@@ -78,24 +83,16 @@ export default {
       { title: 'Click Me 2' },
     ],
   }),
-  //   computed: {
-  //     userLogedIn() {
-  //       return this.$store.getters.user;
-  //     },
-  //   },
-  methods: {
-    // logoutFromFirebase() {
-    //   this.$store.dispatch('signOutAction');
-    //   this.$router.push('/');
-    // },
-    logoutFromFirebase() {
-      this.$store.dispatch('signOutAction');
-      this.$router.push('/');
-    },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.loggedIn = user;
+    });
   },
-  computed: {
-    userLogedIn() {
-      return this.$store.getters.user;
+  methods: {
+    async logoutFromFirebase() {
+      await firebase.auth().signOut().then(() => {
+        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
+      });
     },
   },
 };

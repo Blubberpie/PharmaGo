@@ -59,7 +59,7 @@ export default {
         .then((userCredential) => {
           const { user } = userCredential;
           this.$store.dispatch('auth/setAuthenticatedUser', user);
-          this.$router.push({ name: 'home' });
+          // this.$router.push({ name: 'home' }); // This is handled at created()
         },
         (err) => {
           this.errorMessage = err.message;
