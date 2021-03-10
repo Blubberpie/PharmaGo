@@ -26,6 +26,7 @@ const routes = [
     component: Login,
     meta: {
       requiredAuthentication: false,
+      redirectWhenLoggedIn: true,
     },
   },
   {
@@ -58,6 +59,7 @@ const routes = [
     component: Register,
     meta: {
       requiredAuthentication: false,
+      redirectWhenLoggedIn: true,
     },
   },
 ];
@@ -68,19 +70,23 @@ const router = new VueRouter({
   routes,
 });
 
-// const beforeRouteEnter = async (to, from, next) => {
-//   if (to.meta.requiredAuthentication) {
-//     if (Vue.$store.getters['auth/authenticated']) {
-//       next();
-//     } else {
-//       next({ name: 'login' });
-//     }
-//   } else {
-//     next();
-//   }
-// };
+const beforeRouteEnter = async (to, from, next) => {
+  if (to.meta.requiredAuthentication) {
+    // Redirect user if not logged in
+    if (Vue.$store.getters['auth/authenticated']) {
+      next();
+    } else {
+      next({ name: 'login' });
+    }
+  } else if (to.meta.redirectWhenLoggedIn) {
+    // Redirect user if logged in but tried to access login/register
+    if (Vue.$store.getters['auth/authenticated']) {
+      next({ name: 'home' });
+    } else next();
+  } else next();
+};
 
-// router.beforeEach(beforeRouteEnter);
+router.beforeEach(beforeRouteEnter);
 
 Vue.$router = router;
 

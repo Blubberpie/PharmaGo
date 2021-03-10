@@ -47,13 +47,6 @@ export default {
       errorMessage: '',
     };
   },
-  created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
-      }
-    });
-  },
   methods: {
     async doLogin() {
       await firebase
@@ -66,7 +59,7 @@ export default {
           this.userCredRef.once('value', (credSnap) => {
             this.$store.dispatch('auth/setAuthenticatedUserRole', credSnap.val().role);
           });
-          // this.$router.push({ name: 'home' }); // This is handled at created()
+          this.$router.push({ name: 'home' });
         },
         (err) => {
           this.errorMessage = err.message;

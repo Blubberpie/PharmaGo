@@ -133,6 +133,8 @@ export default {
       customerPhone: '',
       address: '',
       prescriberSignature: '',
+      prescriberName: '',
+      prescriberPhone: '',
       date: null,
       checkbox1: false,
       checkbox2: false,

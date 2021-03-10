@@ -84,13 +84,6 @@ export default {
       ],
     };
   },
-  created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
-      }
-    });
-  },
   methods: {
     async Register() {
       console.log(this.role);
@@ -110,6 +103,7 @@ export default {
                   role: this.role,
                 },
               });
+              this.$router.push({ name: 'home' });
             },
           );
         } catch (e) {

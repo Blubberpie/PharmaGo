@@ -102,7 +102,7 @@ export default {
   methods: {
     async logoutFromFirebase() {
       await firebase.auth().signOut().then(() => {
-        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
+        this.$router.go(); // Refresh the page
       });
     },
   },
