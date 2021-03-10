@@ -92,6 +92,11 @@
                 </v-btn>
               </v-toolbar>
             </template>
+            <template v-slot:item.action="{ item }">
+              <v-icon small @click="deleteItem(item)">
+                mdi-delete
+              </v-icon>
+            </template>
           </v-data-table>
           <v-row class="checkbox">
             <v-col>
@@ -138,6 +143,7 @@ export default {
         { text: 'Strength', value: 'strength' },
         { text: 'Frequency', value: 'frequency' },
         { text: 'Quantity', value: 'quantity' },
+        { text: 'Action', value: 'action' },
       ],
       medication: [
         {
@@ -168,6 +174,12 @@ export default {
     add() {
       this.medication.push(this.editItem);
       this.reset();
+    },
+    deleteItem(item) {
+      const index = this.medication.indexOf(item);
+      if (index > -1) {
+        this.medication.splice(index, 1);
+      }
     },
   },
 };
