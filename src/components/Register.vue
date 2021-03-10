@@ -87,7 +87,7 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.$router.push({ name: 'home' });
+        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
       }
     });
   },
@@ -101,9 +101,13 @@ export default {
           }
           firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
             (cred) => {
-              database.ref(`/user/${cred.user.uid}`).push({
-                username: this.username,
-                role: this.role,
+              const { user } = cred;
+              this.$store.dispatch('auth/setAuthenticatedUser', user);
+              database.ref(`/user/${cred.user.uid}`).set({
+                credentials: {
+                  username: this.username,
+                  role: this.role,
+                },
               });
             },
           );

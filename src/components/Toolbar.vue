@@ -6,7 +6,13 @@
     >
       <v-toolbar-title>PharmaGo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class= "ma-5" text to="/map">Customer Map (for testing)</v-btn>
+      <v-btn
+        v-if="userRole === 'Customer'"
+        class= "ma-5"
+        text to="/map"
+      >
+        Customer Map (for testing)
+      </v-btn>
       <v-btn class= "ma-5" text to="/">Home</v-btn>
       <v-menu
       transition="slide-y-transition"
@@ -67,10 +73,15 @@
 <script>
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
+
+const database = firebase.database();
 
 export default {
   data: () => ({
     loggedIn: false,
+    userCredRef: null,
+    userRole: null,
     tools: [
       { title: 'About' },
       { title: 'Service' },
@@ -83,9 +94,13 @@ export default {
       { title: 'Click Me 2' },
     ],
   }),
-  mounted() {
+  created() {
     firebase.auth().onAuthStateChanged((user) => {
       this.loggedIn = user;
+    });
+    this.userCredRef = database.ref(`/user/${this.$store.state.auth.user.uid}/credentials/`);
+    this.userCredRef.once('value', (credSnap) => {
+      this.userRole = credSnap.val().role;
     });
   },
   methods: {

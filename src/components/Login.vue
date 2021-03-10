@@ -47,13 +47,13 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.$router.push({ name: 'home' });
+        if (this.$route.path !== '/') this.$router.push({ name: 'home' });
       }
     });
   },
   methods: {
-    doLogin() {
-      firebase
+    async doLogin() {
+      await firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then((userCredential) => {
