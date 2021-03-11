@@ -8,6 +8,7 @@ const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 const Home = () => import('../views/Home.vue');
 const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
+const Driver = () => import('@/components/Driver.vue');
 
 Vue.use(VueRouter);
 
@@ -60,6 +61,14 @@ const routes = [
     meta: {
       requiredAuthentication: false,
       redirectWhenLoggedIn: true,
+    },
+  },
+  {
+    path: '/driver', // Rename?
+    name: 'driver',
+    component: Driver,
+    meta: {
+      requiredAuthentication: false, // CHANGE LATER
     },
   },
 ];
