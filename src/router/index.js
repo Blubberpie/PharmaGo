@@ -43,7 +43,7 @@ const routes = [
     name: 'chat',
     component: ChatPage,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true, // CHANGE LATER
     },
   },
   {
