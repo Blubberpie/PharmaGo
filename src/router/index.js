@@ -15,11 +15,12 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/map',
-    name: 'map',
+    path: '/customer/map',
+    name: 'customer-map',
     component: CustomerMap,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true,
+      userRole: 'Customer',
     },
   },
   {
@@ -77,7 +78,8 @@ const routes = [
     name: 'pharmacy-registration',
     component: PharmacyRegistration,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true,
+      userRole: 'Pharmacy',
     },
   },
 ];
@@ -99,6 +101,11 @@ const beforeRouteEnter = async (to, from, next) => {
   } else if (to.meta.redirectWhenLoggedIn) {
     // Redirect user if logged in but tried to access login/register
     if (Vue.$store.getters['auth/authenticated']) {
+      next({ name: 'home' });
+    } else next();
+  } else if (to.meta.userRole) {
+    // Redirect user if user role does not match
+    if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) {
       next({ name: 'home' });
     } else next();
   } else next();

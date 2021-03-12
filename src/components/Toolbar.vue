@@ -9,9 +9,16 @@
       <v-btn
         v-if="userRole === 'Customer'"
         class= "ma-5"
-        text to="/map"
+        text to="/customer/map"
       >
-        Customer Map (for testing)
+        Pick a Pharmacy
+      </v-btn>
+      <v-btn
+        v-if="userRole === 'Pharmacy'"
+        class= "ma-5"
+        text to="/pharmacy/register-pharmacy"
+      >
+        Register a Pharmacy
       </v-btn>
       <v-btn class= "ma-5" text to="/">Home</v-btn>
       <v-menu

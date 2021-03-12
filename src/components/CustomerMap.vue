@@ -41,17 +41,20 @@ export default {
       drawer: false,
     };
   },
-  mounted() {
-    const pharmaciesRef = database.ref('/registered-pharmacies');
-    pharmaciesRef.on('value', (pharmaciesSnap) => {
-      const pharms = {};
-      pharmaciesSnap.forEach((pharmacy) => {
-        pharms[pharmacy.key] = pharmacy.val();
-      });
-      this.pharmacies = pharms;
-    });
+  created() {
+    this.setPharmacies();
   },
   methods: {
+    setPharmacies() {
+      const pharmaciesRef = database.ref('/registered-pharmacies');
+      pharmaciesRef.on('value', (pharmaciesSnap) => {
+        const pharms = {};
+        pharmaciesSnap.forEach((pharmacy) => {
+          pharms[pharmacy.key] = pharmacy.val();
+        });
+        this.pharmacies = pharms;
+      });
+    },
     showPharmacyInfo(key, pharmacy) {
       this.currentPharmacyId = key;
       this.currentPharmacyName = pharmacy.name;

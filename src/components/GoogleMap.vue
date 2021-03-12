@@ -1,5 +1,13 @@
 <template>
-  <div id="map"/>
+  <div>
+    <!--
+      this is a workaround lmao
+      basically an empty div to trigger updated()
+      frick async programming
+    -->
+    <div v-if="places"/>
+    <div id="map"/>
+  </div>
 </template>
 
 <script>
@@ -19,13 +27,16 @@ export default {
       markers: [],
     };
   },
-  mounted() {
+  created() {
     this.initMap();
+  },
+  updated() { // workaround. see comment in template
+    this.createMarkers();
   },
   methods: {
     async initMap() {
       const options = {};
-      const loader = new Loader('AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos', options);
+      const loader = new Loader('AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos', options); // BAD CODE
 
       const mapStyles = [
         {
@@ -45,27 +56,28 @@ export default {
       this.createMarkers();
     },
     createMarkers() {
-      Object.entries(this.places).forEach((entry) => {
-        const [key, place] = entry;
-        const newMarker = new this.google.maps.Marker({
-          position: place.location,
-          map: this.map,
+      if (this.places) {
+        Object.entries(this.places).forEach((entry) => {
+          const [key, place] = entry;
+          const newMarker = new this.google.maps.Marker({
+            position: place.location,
+            map: this.map,
+          });
+          newMarker.addListener('click', () => {
+            this.handleMarkerClick(key, place, newMarker);
+          });
+          this.markers.push(
+            {
+              id: key,
+              name: place.name,
+              description: place.description,
+              marker: newMarker,
+            },
+          );
         });
-        newMarker.addListener('click', () => {
-          this.handleMarkerClick(key, place, newMarker);
-        });
-        this.markers.push(
-          {
-            id: key,
-            name: place.name,
-            description: place.description,
-            marker: newMarker,
-          },
-        );
-      });
+      }
     },
     handleMarkerClick(key, place, marker) {
-      this.map.setZoom(18);
       this.map.panTo(marker.getPosition());
       this.$emit('handleMarkerClick', key, place);
     },
