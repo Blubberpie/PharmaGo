@@ -21,6 +21,8 @@ new Promise((resolve) => {
       const userCredRef = database.ref(`/user/${user.uid}/credentials/`);
       userCredRef.once('value', (credSnap) => {
         Vue.$store.dispatch('auth/setAuthenticatedUserRole', credSnap.val().role);
+        Vue.$store.dispatch('auth/setAuthenticatedUserName', credSnap.val().username);
+        Vue.$store.dispatch('auth/setUid', user.uid);
       });
     } else {
       Vue.$router.push({ name: 'home' }).catch(() => {});

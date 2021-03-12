@@ -1,7 +1,9 @@
 export default {
   state: {
     user: null,
+    username: '',
     userRole: '',
+    uid: '',
   },
   mutations: {
     setUser(state, user) {
@@ -10,6 +12,12 @@ export default {
     setUserRole(state, role) {
       state.userRole = role;
     },
+    setUserName(state, username) {
+      state.username = username;
+    },
+    setUid(state, uid) {
+      state.uid = uid;
+    },
   },
   actions: {
     setAuthenticatedUser(context, user) {
@@ -17,6 +25,12 @@ export default {
     },
     setAuthenticatedUserRole(context, role) {
       context.commit('setUserRole', role);
+    },
+    setAuthenticatedUserName(context, username) {
+      context.commit('setUserName', username);
+    },
+    setUid(context, uid) {
+      context.commit('setUid', uid);
     },
   },
   getters: {

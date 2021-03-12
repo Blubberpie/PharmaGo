@@ -5,7 +5,7 @@
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat</v-toolbar-title>
+              <v-toolbar-title>Chat {{ generateID() }}</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
               <v-list ref="messages" class="logs">
@@ -46,7 +46,7 @@ export default {
   components: {},
   data() {
     return {
-      username: '',
+      // username: '',
       name: null,
       showMessage: '',
       messages: [],
@@ -72,31 +72,82 @@ export default {
     },
     sendMessage() {
       const message = {
-        text: this.showMessage,
-        username: this.name,
+        message: this.showMessage,
+        sendBy: this.name,
+        time: Date.now(),
       };
       firebase
         .database()
-        .ref('messages')
+        .ref('messages/chatMessage')
         .push(message);
       this.showMessage = '';
     },
+    update(path) {
+      const itemsRef = firebase.database().ref(path);
+      const updates = {
+        // aaaa: 'test too', // some update
+      };
+      itemsRef.update(updates);
+    },
+    async generateID() {
+      const getRandomInt = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      };
+      const generate = function () {
+        const length = 8;
+        const timestamp = +new Date();
+        const ts = timestamp.toString();
+        const parts = ts.split('').reverse();
+        let id = '';
+        for (let i = 0; i < length; i += 1) {
+          const index = getRandomInt(0, parts.length - 1);
+          id += parts[index];
+        }
+        return id;
+      };
+
+      const id = generate();
+      const hasDup = await this.childExist('messages/chatUID', id);
+      if (hasDup) {
+        // console.log('chatUID already exists', id);
+        return this.generateID();
+      }
+      // console.log("chatUID doesn't exists", id);
+      return id;
+    },
+    async childExist(path, child) {
+      const snapshot = await firebase
+        .database()
+        .ref(path)
+        .once('value');
+      return snapshot.hasChild(child);
+    },
+    async valueExist(path, value) {
+      const snapshot = await firebase
+        .database()
+        .ref(path)
+        .once('value');
+      const userData = snapshot.val();
+      return value === userData;
+    },
   },
-  mounted() {
-    const viewMessage = this;
-    const itemsRef = firebase.database().ref('messages');
-    itemsRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      const messages = [];
-      Object.keys(data).forEach((key) => {
-        messages.push({
-          id: key,
-          username: data[key].username,
-          text: data[key].text,
-        });
-      });
-      viewMessage.messages = messages;
-    });
+  // mounted() {
+  async mounted() {
+    //
+    // const viewMessage = this;
+    // const itemsRef = firebase.database().ref('messages');
+    // itemsRef.on('value', (snapshot) => {
+    //   const data = snapshot.val();
+    //   const messages = [];
+    //   Object.keys(data).forEach((key) => {
+    //     messages.push({
+    //       id: key,
+    //       username: data[key].username,
+    //       text: data[key].text,
+    //     });
+    //   });
+    //   viewMessage.messages = messages;
+    // });
   },
   watch: {
     logs() {
@@ -108,6 +159,8 @@ export default {
   computed: {
     ...mapState({
       userRole: (state) => state.auth.userRole,
+      username: (state) => state.auth.username,
+      uid: (state) => state.auth.uid,
     }),
   },
 };
