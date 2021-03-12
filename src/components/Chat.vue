@@ -5,7 +5,7 @@
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat {{ generateID() }}</v-toolbar-title>
+              <v-toolbar-title>Chat {{ this.uid }}</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
               <v-list ref="messages" class="logs">
@@ -82,14 +82,7 @@ export default {
         .push(message);
       this.showMessage = '';
     },
-    update(path) {
-      const itemsRef = firebase.database().ref(path);
-      const updates = {
-        // aaaa: 'test too', // some update
-      };
-      itemsRef.update(updates);
-    },
-    async generateID() {
+    async generateChatRoomID() {
       const getRandomInt = function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
       };
@@ -110,7 +103,7 @@ export default {
       const hasDup = await this.childExist('messages/chatUID', id);
       if (hasDup) {
         // console.log('chatUID already exists', id);
-        return this.generateID();
+        return this.generateChatRoomID();
       }
       // console.log("chatUID doesn't exists", id);
       return id;
@@ -120,7 +113,8 @@ export default {
         .database()
         .ref(path)
         .once('value');
-      return snapshot.hasChild(child);
+      const hasChild = snapshot.hasChild(child);
+      return hasChild;
     },
     async valueExist(path, value) {
       const snapshot = await firebase
@@ -130,9 +124,35 @@ export default {
       const userData = snapshot.val();
       return value === userData;
     },
+
+    updateChild(path, updates) {
+      firebase
+        .database()
+        .ref(path)
+        .update(updates);
+    },
+    async addChatRoom() {
+      // async addChatRoom(id, path) {
+      const hasChild = await this.childExist(`user/${this.uid}`, 'chatRooms');
+      console.log(hasChild);
+      if (!hasChild) {
+        firebase
+          .database()
+          .ref(`user/${this.uid}`)
+          .child('chatRooms')
+          .push(await this.generateChatRoomID());
+      } else {
+        firebase
+          .database()
+          .ref(`user/${this.uid}/chatRooms`)
+          .push(await this.generateChatRoomID());
+      }
+    },
   },
   // mounted() {
   async mounted() {
+    await this.addChatRoom();
+    console.log('ads');
     //
     // const viewMessage = this;
     // const itemsRef = firebase.database().ref('messages');
