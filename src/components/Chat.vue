@@ -8,9 +8,9 @@
               <v-toolbar-title>Chat</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
-              <v-list ref="chat" class="logs">
+              <v-list ref="messages" class="logs">
                 <div
-                  v-for="(item, index) in chat"
+                  v-for="(item, index) in messages"
                   :key="index"
                   :class="[
                     'd-flex flex-row align-center my-2',
@@ -38,19 +38,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import firebase from '../plugins/firebase';
+
 export default {
   name: 'Chat',
   components: {},
   data() {
     return {
-      chat: [],
+      username: '',
+      name: null,
+      showMessage: '',
+      messages: [],
       msg: null,
     };
   },
   methods: {
     send() {
       if (this.msg !== null && this.msg !== '') {
-        this.chat.push({
+        this.messages.push({
           from: 'user',
           msg: this.msg,
         });
@@ -59,18 +65,50 @@ export default {
       }
     },
     addReply() {
-      this.chat.push({
+      this.messages.push({
         from: "user's name gpoes here",
         msg: 'some respond text',
       });
     },
+    sendMessage() {
+      const message = {
+        text: this.showMessage,
+        username: this.name,
+      };
+      firebase
+        .database()
+        .ref('messages')
+        .push(message);
+      this.showMessage = '';
+    },
+  },
+  mounted() {
+    const viewMessage = this;
+    const itemsRef = firebase.database().ref('messages');
+    itemsRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      const messages = [];
+      Object.keys(data).forEach((key) => {
+        messages.push({
+          id: key,
+          username: data[key].username,
+          text: data[key].text,
+        });
+      });
+      viewMessage.messages = messages;
+    });
   },
   watch: {
     logs() {
       setTimeout(() => {
-        this.$refs.chat.$el.scrollTop = this.$refs.chat.$el.scrollHeight;
+        this.$refs.messages.$el.scrollTop = this.$refs.messages.$el.scrollHeight;
       }, 0);
     },
+  },
+  computed: {
+    ...mapState({
+      userRole: (state) => state.auth.userRole,
+    }),
   },
 };
 </script>
