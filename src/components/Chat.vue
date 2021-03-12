@@ -152,7 +152,7 @@ export default {
   // mounted() {
   async mounted() {
     await this.addChatRoom();
-    console.log('ads');
+    // console.log('ads');
     //
     // const viewMessage = this;
     // const itemsRef = firebase.database().ref('messages');
