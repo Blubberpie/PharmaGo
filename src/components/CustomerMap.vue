@@ -1,24 +1,14 @@
 <template>
   <div>
     <v-container>
-      <!-- <v-btn color="secondary" @click="drawer = true">
-        open drawer
-      </v-btn> -->
       <GoogleMap
+        :places="pharmacies"
         @handleMarkerClick="showPharmacyInfo"
       />
       <v-navigation-drawer v-model="drawer" :width="400" absolute bottom temporary right>
         <v-sheet>
           <h1 align="center" style="margin: 25px">{{ currentPharmacyName }}</h1>
-          <p align="center" style="margin: 25px">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley of type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum
-          </p>
+          <p align="center" style="margin: 25px">{{ currentPharmacyDescription }}</p>
           <v-row justify="center">
             <v-btn color="secondary">
               Chat
@@ -31,7 +21,11 @@
 </template>
 
 <script>
+import firebase from 'firebase/app';
+import 'firebase/database';
 import GoogleMap from './GoogleMap.vue';
+
+const database = firebase.database();
 
 export default {
   name: 'CustomerMap',
@@ -40,15 +34,28 @@ export default {
   },
   data() {
     return {
-      currentPharmacyId: -1,
+      pharmacies: {},
+      currentPharmacyId: '',
       currentPharmacyName: '',
+      currentPharmacyDescription: '',
       drawer: false,
     };
   },
+  mounted() {
+    const pharmaciesRef = database.ref('/registered-pharmacies');
+    pharmaciesRef.on('value', (pharmaciesSnap) => {
+      const pharms = {};
+      pharmaciesSnap.forEach((pharmacy) => {
+        pharms[pharmacy.key] = pharmacy.val();
+      });
+      this.pharmacies = pharms;
+    });
+  },
   methods: {
-    showPharmacyInfo(pharmacy) {
-      this.currentPharmacyId = pharmacy.id;
+    showPharmacyInfo(key, pharmacy) {
+      this.currentPharmacyId = key;
       this.currentPharmacyName = pharmacy.name;
+      this.currentPharmacyDescription = pharmacy.description;
       this.drawer = true;
     },
   },
