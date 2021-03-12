@@ -98,12 +98,16 @@ const beforeRouteEnter = async (to, from, next) => {
     } else {
       next({ name: 'login' });
     }
-  } else if (to.meta.redirectWhenLoggedIn) {
+  } else next();
+
+  if (to.meta.redirectWhenLoggedIn) {
     // Redirect user if logged in but tried to access login/register
     if (Vue.$store.getters['auth/authenticated']) {
       next({ name: 'home' });
     } else next();
-  } else if (to.meta.userRole) {
+  } else next();
+
+  if (to.meta.userRole) {
     // Redirect user if user role does not match
     if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) {
       next({ name: 'home' });
