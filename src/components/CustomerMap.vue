@@ -34,7 +34,7 @@
 import GoogleMap from './GoogleMap.vue';
 
 export default {
-  name: 'Home',
+  name: 'CustomerMap',
   components: {
     GoogleMap,
   },

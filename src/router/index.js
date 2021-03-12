@@ -9,6 +9,7 @@ const CustomerMap = () => import('@/components/CustomerMap.vue');
 const Home = () => import('../views/Home.vue');
 const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
 const Driver = () => import('@/components/Driver.vue');
+const PharmacyRegistration = () => import('@/views/PharmacyRegistration.vue');
 
 Vue.use(VueRouter);
 
@@ -67,6 +68,14 @@ const routes = [
     path: '/driver', // Rename?
     name: 'driver',
     component: Driver,
+    meta: {
+      requiredAuthentication: false, // CHANGE LATER
+    },
+  },
+  {
+    path: '/pharmacy/register-pharmacy',
+    name: 'pharmacy-registration',
+    component: PharmacyRegistration,
     meta: {
       requiredAuthentication: false, // CHANGE LATER
     },

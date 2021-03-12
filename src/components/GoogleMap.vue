@@ -86,7 +86,7 @@ export default {
     },
     handleMarkerClick(pharmacy, marker) {
       this.map.setZoom(18);
-      this.map.setCenter(marker.getPosition());
+      this.map.panTo(marker.getPosition());
       this.$emit('handleMarkerClick', pharmacy);
     },
   },
