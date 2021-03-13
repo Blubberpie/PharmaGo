@@ -3,6 +3,8 @@
         <v-container class=''>
             <v-layout row align-center justify-center class='mt-8'>
                 <v-flex class='' height=''>
+                   {{ location.coords.latitude }}, {{ location.coords.longitude}}
+                   {{getAddress(location.coords.latitude, location.coords.longitude)}}
                     <v-card rippled class='flexcard white mx-auto' elevation="3"
            rounded="lg">
                     <v-card flat style="overflow:hidden;" class='teal lighten-5' rounded="lg">
@@ -179,16 +181,19 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import axios from 'axios';
 
 const database = firebase.database();
 export default {
   data() {
     return {
       // Bankok location
+      location: null,
       distanceRules: [5, 10, 25, 50, 100],
-      dlat: 13.862810,
-      dlng: 100.514511,
+      // dlat: 13.862810,
+      // dlng: 100.514511,
       selection: 2,
+      error: null,
       // distanceDriver: {},
       orderedPharmacies: {},
       orderedPharmacyRef: null,
@@ -211,6 +216,7 @@ export default {
   },
   created() {
     this.orderedPharmacyRef = database.ref('registered-pharmacies'); // change this
+    this.getLocation();
   },
   mounted() {
     this.orderedPharmacyRef.on('value', (snapshot) => {
@@ -241,12 +247,37 @@ export default {
     },
   },
   methods: {
+    getLocation() {
+      if (!('geolocation' in navigator)) {
+        this.error = 'Geolocation is not available';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition((pos) => {
+      // this.gettingLocation = false;
+        this.location = pos;
+      }, (err) => {
+      // this.gettingLocation = false;
+        this.error = err.message;
+      });
+    },
+    getAddress(lat, long) {
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}
+      &key=AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos`).then((response) => {
+        if (response.data.error_message) {
+          console.log(response.data.error_message);
+        } else {
+          console.log(response.data.results[0].formatted_address);
+        }
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    },
     CalculateDistance(lat, lng) {
       const R = 6371;
       const lat1 = lat * (Math.PI / 180);
-      const lat2 = this.dlat * (Math.PI / 180);
-      const deltalat = (lat - this.dlat) * (Math.PI / 180);
-      const deltalng = (lng - this.dlng) * (Math.PI / 180);
+      const lat2 = this.location.coords.latitude * (Math.PI / 180);
+      const deltalat = (lat - this.location.coords.latitude) * (Math.PI / 180);
+      const deltalng = (lng - this.location.coords.longitude) * (Math.PI / 180);
 
       const a = Math.sin(deltalat / 2) * Math.sin(deltalat / 2)
                 + Math.cos(lat1) * Math.cos(lat2)
