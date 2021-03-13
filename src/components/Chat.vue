@@ -156,7 +156,7 @@ export default {
         .ref('messages/chatRooms/')
         .child(roomID)
         .child('members')
-        .update({ member1: 'guy2', member2: 'guy3' }); // add member 1
+        .update({ member1: this.username, member2: 'guy3' }); // add members
       firebase
         .database()
         .ref(`messages/chatRooms/${roomID}`)
@@ -167,6 +167,7 @@ export default {
           text: 'some text',
           timestamp: Date.now(),
         }); // add messages
+      console.log(roomID);
     },
     addText(message) {
       const roomID = 84846113;
@@ -176,7 +177,6 @@ export default {
         .child('messages')
         // .child('message')
         .push({
-          indexOn: 'timestamp',
           from: this.username,
           text: message,
           timestamp: Date.now(),
@@ -200,10 +200,37 @@ export default {
       messages.forEach((key) => console.log(key));
       // console.log(Date.now());
     },
+    async getAllUsersChatRooms() {
+      const rooms = [];
+      const val = await firebase
+        .database()
+        .ref(`user/${this.uid}/chatRooms`)
+        // .limitToLast(2)
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      Object.keys(val).forEach((key) => {
+        rooms.push(val[key]);
+      });
+      console.log(rooms);
+    },
+    async getOtherRoomMember(id) {
+      const obj = await firebase
+        .database()
+        .ref(`messages/chatRooms/${id}/members`)
+        // .limitToLast(2)
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      const members = Object.values(obj);
+      const otherMember = members.filter((member) => member !== id)[0];
+      console.log(otherMember);
+      return otherMember;
+    },
     test() {
       // this.addChatRoom();
-      this.listAllMessages();
+      // this.listAllMessages();
       // this.addText('3');
+      // this.getAllUsersChatRooms();
+      // this.getOtherRoomMember(31195111);
     },
   },
   // mounted() {
