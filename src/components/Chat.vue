@@ -6,6 +6,7 @@
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
               <v-toolbar-title>Chat {{ this.uid }}</v-toolbar-title>
+              <v-btn @click="test">test</v-btn>
             </v-toolbar>
             <v-card-text>
               <v-list ref="messages" class="logs">
@@ -47,6 +48,7 @@ export default {
   data() {
     return {
       // username: '',
+      roomID: '',
       name: null,
       showMessage: '',
       messages: [],
@@ -135,24 +137,77 @@ export default {
       // async addChatRoom(id, path) {
       const hasChild = await this.childExist(`user/${this.uid}`, 'chatRooms');
       console.log(hasChild);
+      const roomID = await this.generateChatRoomID();
+      // this.roomID = roomID;
       if (!hasChild) {
         firebase
           .database()
           .ref(`user/${this.uid}`)
           .child('chatRooms')
-          .push(await this.generateChatRoomID());
+          .push(roomID); // add to
       } else {
         firebase
           .database()
           .ref(`user/${this.uid}/chatRooms`)
-          .push(await this.generateChatRoomID());
+          .push(roomID);
       }
+      firebase
+        .database()
+        .ref('messages/chatRooms/')
+        .child(roomID)
+        .child('members')
+        .update({ member1: 'guy2', member2: 'guy3' }); // add member 1
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}`)
+        .child('messages')
+        .child('message')
+        .push({
+          from: 'guy3',
+          text: 'some text',
+          timestamp: Date.now(),
+        }); // add messages
     },
-    test() {},
+    addText(message) {
+      const roomID = 84846113;
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}`)
+        .child('messages')
+        // .child('message')
+        .push({
+          indexOn: 'timestamp',
+          from: this.username,
+          text: message,
+          timestamp: Date.now(),
+        }); // add messages
+    },
+    async listAllMessages() {
+      const roomID = 84846113;
+      const messages = [];
+      const val = await firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}/messages`)
+        .orderByChild('timestamp')
+        // .limitToLast(2)
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      // const messages = ref.orderke
+      // const messages = snapshot.val();
+      Object.keys(val).forEach((key) => {
+        messages.push(val[key]);
+      });
+      messages.forEach((key) => console.log(key));
+      // console.log(Date.now());
+    },
+    test() {
+      // this.addChatRoom();
+      this.listAllMessages();
+      // this.addText('3');
+    },
   },
   // mounted() {
   async mounted() {
-    await this.addChatRoom();
     // console.log('ads');
     //
     // const viewMessage = this;
