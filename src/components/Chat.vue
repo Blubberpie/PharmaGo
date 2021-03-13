@@ -148,6 +148,7 @@ export default {
           .push(await this.generateChatRoomID());
       }
     },
+    test() {},
   },
   // mounted() {
   async mounted() {
