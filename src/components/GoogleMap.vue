@@ -1,5 +1,13 @@
 <template>
-  <div id="map"></div>
+  <div>
+    <!--
+      this is a workaround lmao
+      basically an empty div to trigger updated()
+      frick async programming
+    -->
+    <div v-if="places"/>
+    <div id="map"/>
+  </div>
 </template>
 
 <script>
@@ -7,47 +15,28 @@ import { Loader } from 'google-maps';
 
 export default {
   name: 'GoogleMap',
+  props: {
+    places: {
+      type: Object,
+    },
+  },
   data() {
     return {
       google: null,
       map: null,
       markers: [],
-      fakePharmacies: [
-        {
-          id: 0,
-          name: 'Pharmacy A',
-          position: { lat: 13.76187570301321, lng: 100.52704439146251 },
-        },
-        {
-          id: 1,
-          name: 'Pharmacy B',
-          position: { lat: 13.7466, lng: 100.5393 },
-        },
-        {
-          id: 2,
-          name: 'Pharmacy C',
-          position: { lat: 13.757932503826476, lng: 100.51911803172393 },
-        },
-        {
-          id: 3,
-          name: 'Pharmacy D',
-          position: { lat: 13.759915404360612, lng: 100.48575094210922 },
-        },
-        {
-          id: 4,
-          name: 'Pharmacy E',
-          position: { lat: 13.746925600924257, lng: 100.50941622721052 },
-        },
-      ],
     };
   },
-  mounted() {
+  created() {
     this.initMap();
+  },
+  updated() { // workaround. see comment in template
+    this.createMarkers();
   },
   methods: {
     async initMap() {
       const options = {};
-      const loader = new Loader('AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos', options);
+      const loader = new Loader('AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos', options); // BAD CODE
 
       const mapStyles = [
         {
@@ -67,27 +56,30 @@ export default {
       this.createMarkers();
     },
     createMarkers() {
-      this.fakePharmacies.forEach((pharmacy) => {
-        const newMarker = new this.google.maps.Marker({
-          position: pharmacy.position,
-          map: this.map,
+      if (this.places) {
+        Object.entries(this.places).forEach((entry) => {
+          const [key, place] = entry;
+          const newMarker = new this.google.maps.Marker({
+            position: place.location,
+            map: this.map,
+          });
+          newMarker.addListener('click', () => {
+            this.handleMarkerClick(key, place, newMarker);
+          });
+          this.markers.push(
+            {
+              id: key,
+              name: place.name,
+              description: place.description,
+              marker: newMarker,
+            },
+          );
         });
-        newMarker.addListener('click', () => {
-          this.handleMarkerClick(pharmacy, newMarker);
-        });
-        this.markers.push(
-          {
-            id: pharmacy.id,
-            name: pharmacy.name,
-            marker: newMarker,
-          },
-        );
-      });
+      }
     },
-    handleMarkerClick(pharmacy, marker) {
-      this.map.setZoom(18);
-      this.map.setCenter(marker.getPosition());
-      this.$emit('handleMarkerClick', pharmacy);
+    handleMarkerClick(key, place, marker) {
+      this.map.panTo(marker.getPosition());
+      this.$emit('handleMarkerClick', key, place);
     },
   },
 };

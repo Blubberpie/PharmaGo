@@ -37,5 +37,8 @@ export default {
     authenticated(state) {
       return state.user != null;
     },
+    getUserRole(state) {
+      return state.userRole;
+    },
   },
 };
