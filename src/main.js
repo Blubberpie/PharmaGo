@@ -16,8 +16,8 @@ const database = firebase.database();
 // Persist user
 new Promise((resolve) => {
   firebase.auth().onAuthStateChanged((user) => {
-    Vue.$store.dispatch('auth/setAuthenticatedUser', user);
     if (user) {
+      Vue.$store.dispatch('auth/setAuthenticatedUser', user);
       const userCredRef = database.ref(`/user/${user.uid}/credentials/`);
       userCredRef.once('value', (credSnap) => {
         Vue.$store.dispatch('auth/setAuthenticatedUserRole', credSnap.val().role);
