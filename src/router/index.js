@@ -10,6 +10,7 @@ const Home = () => import('../views/Home.vue');
 const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
 const Driver = () => import('@/components/Driver.vue');
 const PharmacyRegistration = () => import('@/views/PharmacyRegistration.vue');
+const PendingPrescriptions = () => import('@/views/PendingPrescriptions.vue');
 
 Vue.use(VueRouter);
 
@@ -80,6 +81,15 @@ const routes = [
     meta: {
       requiredAuthentication: true,
       userRole: 'Pharmacy',
+    },
+  },
+  {
+    path: '/customer/pending-prescriptions',
+    name: 'pending-prescriptions',
+    component: PendingPrescriptions,
+    meta: {
+      requiredAuthentication: true,
+      userRole: 'Customer',
     },
   },
 ];
