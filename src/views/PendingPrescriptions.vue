@@ -35,23 +35,61 @@
               </v-toolbar>
             </template>
           </v-data-table>
-          <v-dialog v-model="approveDialog" width="375">
-            <v-card>
-              <v-card-title>Approve Prescription</v-card-title>
-              <v-card-text>
-                Upon clicking CONFIRM, a Delivery Job will be
-                created and will be visible to all potential deliverers.
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer/>
-                <v-btn color="success" @click="approvePrescription(item.pharmacyId)">
-                  Yes, Approve
-                </v-btn>
-                <v-btn color="gray" @click="approveDialog = false">
-                  cancel
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+          <v-dialog v-model="approveDialog" width="700">
+            <v-stepper v-model="stepperState">
+              <v-stepper-header>
+                <v-divider/>
+                <v-stepper-step
+                  :complete="stepperState > 1"
+                  step="1"
+                  color="secondary"
+                >
+                  Pick a Location
+                </v-stepper-step>
+
+                <v-divider/>
+
+                <v-stepper-step
+                  :complete="stepperState > 2"
+                  step="2"
+                  color="secondary"
+                >
+                  Confirmation
+                </v-stepper-step>
+                <v-divider/>
+              </v-stepper-header>
+
+              <v-stepper-items>
+                <v-stepper-content step="1">
+                  <CustomerAddressForm
+                    @commitForm="commitForm"
+                    @cancelForm="cancelForm"
+                  />
+                </v-stepper-content>
+                <v-stepper-content step="2">
+                  <v-card>
+                    <v-card-text>
+                      <h3>
+                        Upon clicking APPROVE, a Delivery Job will be
+                        created and will be visible to all potential deliverers.
+                      </h3>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-btn color="gray" @click="stepperState = 1">
+                        go back
+                      </v-btn>
+                      <v-spacer/>
+                      <v-btn color="success" @click="approvePrescription(item.pharmacyId)">
+                        Yes, Approve
+                      </v-btn>
+                      <v-btn color="gray" @click="cancelForm">
+                        Cancel
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-stepper-content>
+              </v-stepper-items>
+            </v-stepper>
           </v-dialog>
           <v-dialog v-model="rejectDialog" width="375">
             <v-card>
@@ -66,7 +104,7 @@
                   Yes, Reject
                 </v-btn>
                 <v-btn color="gray" @click="rejectDialog = false">
-                  cancel
+                  Cancel
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -101,11 +139,16 @@
 import firebase from 'firebase/app';
 import 'firebase/database';
 import { mapState } from 'vuex';
+import axios from 'axios';
+import CustomerAddressForm from '@/components/CustomerAddressForm.vue';
 
 const database = firebase.database();
 
 export default {
   name: 'PendingPrescriptions',
+  components: {
+    CustomerAddressForm,
+  },
   data() {
     return {
       approveDialog: false,
@@ -113,6 +156,9 @@ export default {
       popUpAlert: false,
       popUpColor: '',
       popUpText: '',
+      stepperState: 1,
+      customerAddress: '',
+      customerLocation: null,
       headers: [
         { text: 'Drug Name', value: 'name' },
         { text: 'Strength', value: 'strength' },
@@ -196,35 +242,58 @@ export default {
       const pharmacyRef = database.ref(`/registered-pharmacies/${pharmacyId}`);
       const deliveryJobsRef = database.ref('/deliveryJobs');
 
-      let pharmacyLocation = null;
-      const customerLocation = { lat: 13.7563, lng: 100.5018 }; // temporary
+      let done = false;
 
       await pharmacyRef.once('value', (pharmacySnap) => {
-        console.log(pharmacySnap);
-        pharmacyLocation = pharmacySnap.val().location;
+        const pharmacyLocation = pharmacySnap.val().location;
+        const pharmacyAddress = pharmacySnap.val().address;
+
+        if (pharmacyLocation && pharmacyAddress && this.customerLocation) {
+          const newDeliveryJob = {
+            pharmacyId,
+            customerId: this.user.uid,
+            fromLocation: pharmacyLocation,
+            fromAddress: pharmacyAddress,
+            toLocation: this.customerLocation,
+            toAddress: this.customerAddress,
+            status: 1, // 1 = unassigned
+          };
+          deliveryJobsRef.push(newDeliveryJob)
+            .then(() => {
+              this.showPopUpAlert('success');
+              done = true;
+            })
+            .catch((error) => {
+              this.showPopUpAlert('fail', `Error: ${error}`);
+            });
+        } else {
+          this.showPopUpAlert('fail', 'Error: Couldn\'t communicate with the server');
+          console.log(pharmacyLocation);
+          console.log(pharmacyAddress);
+          console.log(this.customerLocation);
+        }
       });
-      if (pharmacyLocation) {
-        const newDeliveryJob = {
-          pharmacyId,
-          customerId: this.user.uid,
-          fromLocation: pharmacyLocation,
-          toLocation: customerLocation,
-          status: 1, // 1 = unassigned
-        };
-        deliveryJobsRef.push(newDeliveryJob)
-          .then(() => {
-            this.showPopUpAlert('success');
-          })
-          .catch((error) => {
-            this.showPopUpAlert('fail', `Error: ${error}`);
-          });
-      } else {
-        console.log('Couldn\'t retrieve data from server.');
-      }
+      if (!done) this.showPopUpAlert('fail', 'Couldn\'t communicate with the server!');
     },
     rejectPrescription() {
       this.rejectDialog = false;
       // TODO: IMPLEMENT
+    },
+    async commitForm(formattedAddress) {
+      this.customerAddress = formattedAddress;
+      await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${this.customerAddress}&key=AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos`,
+      ).then((response) => {
+        const { location } = response.data.results[0].geometry;
+        this.customerLocation = location;
+        this.stepperState = 2;
+      }).catch(() => {
+        this.showPopUpAlert('fail', 'Error! Problem communicating with server');
+      });
+    },
+    cancelForm() {
+      this.stepperState = 1;
+      this.approveDialog = false;
     },
     showPopUpAlert(status, errorText = '') {
       switch (status) {
