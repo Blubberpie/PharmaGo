@@ -181,14 +181,14 @@
                   </template>
                   <v-card>
                     <v-card-title class='grey--text text--darken-2'>
-                      Pharmacy's Location
+                      Pharmacy's Address
                         <!-- <h2>Add a New Item </h2> -->
                     </v-card-title>
                     <v-card-text>
                       {{pharmacy.fromAddress}}
                     </v-card-text>
                     <v-card-title class='grey--text text--darken-2'>
-                      Customer's Location
+                      Customer's Address
                         <!-- <h2>Add a New Item </h2> -->
                     </v-card-title>
                     <v-card-text>
