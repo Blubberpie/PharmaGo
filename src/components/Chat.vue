@@ -5,7 +5,7 @@
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat {{ messages }}</v-toolbar-title>
+              <v-toolbar-title>Chat {{ roomID }}</v-toolbar-title>
               <v-btn @click="test">test</v-btn>
             </v-toolbar>
             <v-card-text>
@@ -221,30 +221,11 @@ export default {
   // mounted() {
   async mounted() {
     await this.listAllMessages();
-    // this.listAllMessages();
-    // console.log('ads');
-    //
-    // const viewMessage = this;
-    // const itemsRef = firebase.database().ref('messages');
-    // itemsRef.on('value', (snapshot) => {
-    //   const data = snapshot.val();
-    //   const messages = [];
-    //   Object.keys(data).forEach((key) => {
-    //     messages.push({
-    //       id: key,
-    //       username: data[key].username,
-    //       text: data[key].text,
-    //     });
-    //   });
-    //   viewMessage.messages = messages;
-    // });
   },
   watch: {
-    // logs() {
-    //   setTimeout(() => {
-    //     this.$refs.messages.$el.scrollTop = this.$refs.messages.$el.scrollHeight;
-    //   }, 0);
-    // },
+    roomID() {
+      this.listAllMessages();
+    },
   },
   computed: {
     ...mapState({

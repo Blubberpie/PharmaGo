@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <Chat v-if="this.currentRoomID" :roomID="this.currentRoomID" :username="this.username" />
+      <Chat v-if="currentRoomID" :roomID="currentRoomID" :username="username" />
     </v-container>
     <v-container>
       <v-navigation-drawer :width="400" absolute permanent right>
@@ -71,7 +71,7 @@ export default {
   methods: {
     setCurrentRoomID(id) {
       this.currentRoomID = id;
-      // console.log(id);
+      console.log(id);
     },
     async getAllUsersChatRooms() {
       const rooms = [];
