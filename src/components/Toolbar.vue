@@ -9,6 +9,9 @@
       <v-btn v-if="userRole === 'Customer'" class="ma-5" text to="/customer/map">
         Pick a Pharmacy
       </v-btn>
+      <v-btn v-if="userRole === 'Customer'" class="ma-5" text to="/customer/pending-prescriptions">
+        Manage Pending Prescriptions
+      </v-btn>
       <v-btn v-if="userRole === 'Pharmacy'" class="ma-5" text to="/pharmacy/register-pharmacy">
         Register a Pharmacy
       </v-btn>

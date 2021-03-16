@@ -10,6 +10,7 @@ const Home = () => import('../views/Home.vue');
 const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
 const Driver = () => import('@/components/Driver.vue');
 const PharmacyRegistration = () => import('@/views/PharmacyRegistration.vue');
+const PendingPrescriptions = () => import('@/views/PendingPrescriptions.vue');
 
 Vue.use(VueRouter);
 
@@ -82,6 +83,15 @@ const routes = [
       userRole: 'Pharmacy',
     },
   },
+  {
+    path: '/customer/pending-prescriptions',
+    name: 'pending-prescriptions',
+    component: PendingPrescriptions,
+    meta: {
+      requiredAuthentication: true,
+      userRole: 'Customer',
+    },
+  },
 ];
 
 const router = new VueRouter({
@@ -100,16 +110,16 @@ const beforeRouteEnter = async (to, from, next) => {
     }
   } else next();
 
-  if (to.meta.redirectWhenLoggedIn) {
-    // Redirect user if logged in but tried to access login/register
-    if (Vue.$store.getters['auth/authenticated']) {
+  if (to.meta.userRole) {
+    // Redirect user if user role does not match
+    if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) { // TODO: FIX async BUG
       next({ name: 'home' });
     } else next();
   } else next();
 
-  if (to.meta.userRole) {
-    // Redirect user if user role does not match
-    if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) {
+  if (to.meta.redirectWhenLoggedIn) {
+    // Redirect user if logged in but tried to access login/register
+    if (Vue.$store.getters['auth/authenticated']) {
       next({ name: 'home' });
     } else next();
   } else next();
