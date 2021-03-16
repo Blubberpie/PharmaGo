@@ -5,8 +5,7 @@
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat {{ roomID }}</v-toolbar-title>
-              <v-btn @click="test">test</v-btn>
+              <v-toolbar-title>Chat </v-toolbar-title>
             </v-toolbar>
             <v-card-text>
               <v-list class="logs">
@@ -181,13 +180,6 @@ export default {
       });
       this.messages = messages;
     },
-    test() {
-      // this.listAllMessages();
-      this.addChatRoom();
-    },
-    foo() {
-      console.log('foo barr');
-    },
   },
   // mounted() {
   async mounted() {
@@ -195,14 +187,6 @@ export default {
   },
   watch: {
     roomID() {
-      console.log('room updated');
-      // firebase
-      //   .database()
-      //   .ref(`messages/chatRooms/${this.roomID}/messages`)
-      //   .on('child_added', (childSnapshot, prevChildKey) => {
-      //     console.log('theres an update', childSnapshot.val(), prevChildKey);
-      //     this.listAllMessages();
-      //   });
       this.listAllMessages();
     },
   },
@@ -213,15 +197,7 @@ export default {
       // uid: (state) => state.auth.uid,
     }),
   },
-  created() {
-    // firebase
-    //   .database()
-    //   .ref(`messages/chatRooms/${this.roomID}/messages`)
-    //   .on('child_added', (childSnapshot, prevChildKey) => {
-    //     console.log('theres an update', childSnapshot.val(), prevChildKey);
-    //     this.listAllMessages();
-    //   });
-  },
+  created() {},
 };
 </script>
 
