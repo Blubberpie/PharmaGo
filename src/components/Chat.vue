@@ -127,6 +127,8 @@ export default {
         .update(updates);
     },
     async addChatRoom() {
+      // REQUIRED ANOTHER USER ID TO CREATE A CHAT ROOM
+      // const otherUser = '4XulcO49PARP3PzjhZBkwOeMZYM2';
       // async addChatRoom(id, path) {
       const hasChild = await this.childExist(`user/${this.uid}`, 'chatRooms');
       console.log(hasChild);
@@ -156,8 +158,8 @@ export default {
         .child('messages')
         .child('message')
         .push({
-          from: 'guy3',
-          text: 'some text',
+          from: this.username,
+          text: 'This text is used to initialized firebase child',
           timestamp: Date.now(),
         }); // add messages
       console.log(roomID);
@@ -180,7 +182,8 @@ export default {
       this.messages = messages;
     },
     test() {
-      this.listAllMessages();
+      // this.listAllMessages();
+      this.addChatRoom();
     },
     foo() {
       console.log('foo barr');

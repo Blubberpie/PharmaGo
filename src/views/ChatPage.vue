@@ -137,7 +137,8 @@ export default {
   async mounted() {
     this.uid = firebase.auth().currentUser.uid;
     await this.setAllRooms();
-    this.setUsername();
+    await this.setUsername();
+    console.log(this.username);
     this.roomIDs.forEach((roomID) => {
       console.log(`For: ${roomID}`);
       // console.log
