@@ -91,10 +91,8 @@ export default {
       this.roomIDs = await this.getAllUsersChatRooms();
       const newID = this.$route.params.roomID;
       if (newID) {
-        console.log('has params', newID);
         this.setCurrentRoomID(newID);
       } else {
-        console.log('no params');
         this.setCurrentRoomID(this.roomIDs[0]);
       }
       this.roomIDs.forEach(async (roomID) => {
