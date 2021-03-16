@@ -46,7 +46,7 @@ const routes = [
     name: 'chat',
     component: ChatPage,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true, // CHANGE LATER
     },
   },
   {
@@ -112,7 +112,8 @@ const beforeRouteEnter = async (to, from, next) => {
 
   if (to.meta.userRole) {
     // Redirect user if user role does not match
-    if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) { // TODO: FIX async BUG
+    if (to.meta.userRole !== Vue.$store.getters['auth/getUserRole']) {
+      // TODO: FIX async BUG
       next({ name: 'home' });
     } else next();
   } else next();
