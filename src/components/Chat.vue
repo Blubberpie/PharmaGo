@@ -64,33 +64,18 @@ export default {
   methods: {
     send() {
       if (this.text !== null && this.text !== '') {
-        this.messages.push({
-          from: this.username,
+        const message = {
           text: this.text,
+          from: this.username,
           timestamp: Date.now(),
-        });
-        this.text = null;
-        this.addReply();
+        };
+        firebase
+          .database()
+          .ref(`messages/chatRooms/${this.roomID}/messages`)
+          .push(message);
+        this.text = '';
+        this.listAllMessages();
       }
-    },
-    addReply() {
-      this.messages.push({
-        from: "user's name gpoes here",
-        text: 'some respond text',
-        timestamp: Date.now(),
-      });
-    },
-    sendMessage() {
-      const message = {
-        text: this.showMessage,
-        sendBy: this.name,
-        timestamp: Date.now(),
-      };
-      firebase
-        .database()
-        .ref('messages/chatMessage')
-        .push(message);
-      this.showMessage = '';
     },
     async generateChatRoomID() {
       const getRandomInt = function (min, max) {
@@ -177,21 +162,9 @@ export default {
         }); // add messages
       console.log(roomID);
     },
-    addText() {
-      firebase
-        .database()
-        .ref(`messages/chatRooms/${this.roomID}/messages`)
-        // .child('messages')
-        // .child('message')
-        .push({
-          from: this.username,
-          text: this.text,
-          timestamp: Date.now(),
-        }); // add messages
-    },
     async listAllMessages() {
       const messages = [];
-      console.log(this.roomID);
+      // console.log(this.roomID);
       const val = await firebase
         .database()
         .ref(`messages/chatRooms/${this.roomID}/messages`)
@@ -204,18 +177,13 @@ export default {
       Object.keys(val).forEach((key) => {
         messages.push(val[key]);
       });
-      // messages.forEach((key) => console.log(key));
-      // console.log(messages);
       this.messages = messages;
-      console.log(messages[0].from);
-      console.log(messages);
     },
     test() {
       this.listAllMessages();
-      // console.log(this.username);
-
-      // console.log('a');
-      // this.addText();
+    },
+    foo() {
+      console.log('foo barr');
     },
   },
   // mounted() {
@@ -224,6 +192,14 @@ export default {
   },
   watch: {
     roomID() {
+      console.log('room updated');
+      // firebase
+      //   .database()
+      //   .ref(`messages/chatRooms/${this.roomID}/messages`)
+      //   .on('child_added', (childSnapshot, prevChildKey) => {
+      //     console.log('theres an update', childSnapshot.val(), prevChildKey);
+      //     this.listAllMessages();
+      //   });
       this.listAllMessages();
     },
   },
@@ -233,6 +209,15 @@ export default {
       // username: (state) => state.auth.username,
       // uid: (state) => state.auth.uid,
     }),
+  },
+  created() {
+    // firebase
+    //   .database()
+    //   .ref(`messages/chatRooms/${this.roomID}/messages`)
+    //   .on('child_added', (childSnapshot, prevChildKey) => {
+    //     console.log('theres an update', childSnapshot.val(), prevChildKey);
+    //     this.listAllMessages();
+    //   });
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <Chat v-if="currentRoomID" :roomID="currentRoomID" :username="username" />
+      <Chat v-if="currentRoomID" :roomID="currentRoomID" :username="username" ref="chat" />
     </v-container>
     <v-container>
       <v-navigation-drawer :width="400" absolute permanent right>
@@ -134,10 +134,21 @@ export default {
       // console.log(username);
     },
   },
-  mounted() {
+  async mounted() {
     this.uid = firebase.auth().currentUser.uid;
-    this.setAllRooms();
+    await this.setAllRooms();
     this.setUsername();
+    this.roomIDs.forEach((roomID) => {
+      console.log(`For: ${roomID}`);
+      // console.log
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}/messages`)
+        .on('value', (dataSnapshot) => {
+          console.log(`theres an update in room: ${roomID}`, dataSnapshot.val());
+          this.$refs.chat.listAllMessages();
+        });
+    });
     // console.log(this.rooms[0]);
   },
   computed: {
