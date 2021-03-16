@@ -141,16 +141,16 @@
                                   <!-- </v-col> -->
                                   <!-- <v-col cols='5' class=''> -->
                                     <v-row class='ml-3 mb-2  font-weight-medium'>
-                                    <subtitle-2 class='grey--text text--darken-2'>
+                                    <div class='text-subtitle-1 grey--text text--darken-2'>
                                       {{getName(pharmacy.pharmacyId)}}
                                       <!-- {{getName2}} -->
-                                      </subtitle-2>
+                                      </div>
                                     </v-row>
                                     <!-- <br> -->
                                     <!-- <v-row class='red'> -->
-                                    <body-2 class='grey--text text--darken-2 mx-3'>
+                                    <div class='text-body-1 grey--text text--darken-2 mx-3'>
                                       {{getDescription(pharmacy.pharmacyId)}}2
-                                      </body-2>
+                                      </div>
                                       <!-- </v-card-text> -->
                                     <!-- </v-row> -->
                                   <!-- </v-col> -->
@@ -236,6 +236,8 @@
     </v-app>
 </template>
 <script>
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-extraneous-dependencies */
 // import { defineComponent } from '@vue/composition-api'
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -248,7 +250,7 @@ export default {
     return {
       location: null,
       address: null,
-      distanceRules: [5, 10, 25, 50, 100],
+      distanceRules: [0, 5, 10, 25, 50, 100],
       selection: 2,
       error: null,
       // distanceDriver: {},
