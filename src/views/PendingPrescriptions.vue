@@ -1,10 +1,14 @@
 <template>
   <v-container>
     <h1>Approve or Reject Your Pending Prescriptions</h1>
-    <p>
+    <p v-if="pendingPrescriptions.length === 0">
       This is the list of prescriptions sent to you
       by the pharmacies you've chatted with.<br/>
       You can choose to approve or reject their offer.
+    </p>
+    <p v-else>
+      You have no pending prescriptions! The pharmacies you have
+      contacted will send you a prescription.
     </p>
     <v-expansion-panels multiple>
       <v-expansion-panel
@@ -17,12 +21,15 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-data-table
-            class="table"
+            class="mt-0"
             :headers="headers"
             :items="item.medication"
             hide-default-footer
           >
             <template v-slot:top>
+              <p><b class="ml-4 mr-3">Prescriber's Name:</b>{{ item.prescriberName }}</p>
+              <p><b class="ml-4 mr-3">Prescriber's Email:</b>{{ item.prescriberEmail }}</p>
+              <p><b class="ml-4 mr-3">Prescriber's Phone:</b>{{ item.prescriberPhone }}</p>
               <v-toolbar flat>
                 <v-toolbar-title style="font-weight: bold">Proposed Medication</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -79,7 +86,10 @@
                         go back
                       </v-btn>
                       <v-spacer/>
-                      <v-btn color="success" @click="approvePrescription(item.pharmacyId)">
+                      <v-btn
+                        color="success"
+                        @click="approvePrescription(item.pharmacyId, i)"
+                      >
                         Yes, Approve
                       </v-btn>
                       <v-btn color="gray" @click="cancelForm">
@@ -143,6 +153,8 @@ import axios from 'axios';
 import CustomerAddressForm from '@/components/CustomerAddressForm.vue';
 
 const database = firebase.database();
+const STATUS_PENDING = 1;
+const STATUS_APPROVED = 2;
 
 export default {
   name: 'PendingPrescriptions',
@@ -159,77 +171,90 @@ export default {
       stepperState: 1,
       customerAddress: '',
       customerLocation: null,
+      customerPrescriptionsRef: null,
       headers: [
         { text: 'Drug Name', value: 'name' },
         { text: 'Strength', value: 'strength' },
         { text: 'Frequency', value: 'frequency' },
         { text: 'Quantity', value: 'quantity' },
       ],
-      pendingPrescriptions: [
-        {
-          prescriptionId: '2987329874',
-          pharmacyName: 'Good Pharmacy',
-          pharmacyId: '-MVk2EVqYH8dEPnTD5-U',
-          medication: [
-            {
-              name: 'Neutapine',
-              strength: '40mg',
-              frequency: '1 daily before sleep',
-              quantity: '60',
-            },
-            {
-              name: 'Neutapsdafdsfine',
-              strength: '40mg',
-              frequency: '1 daily sdfsdfbefore sleep',
-              quantity: '60',
-            },
-            {
-              name: 'Neutapinsdfe',
-              strength: '40mg',
-              frequency: '1 dailsdfy before sleep',
-              quantity: '60',
-            },
-            {
-              name: 'Neuffftapine',
-              strength: '40mg',
-              frequency: '1 fdaily before sleep',
-              quantity: '60',
-            },
-          ],
-        },
-        {
-          prescriptionId: '874339874',
-          pharmacyName: 'KarmaPharma',
-          pharmacyId: '-MVk2skXtgZxNuiNuCYf',
-          medication: [
-            {
-              name: 'sadfdsaf',
-              strength: '40mg',
-              frequency: '1 daily before sleep',
-              quantity: '60',
-            },
-            {
-              name: 'jhh',
-              strength: '40mg',
-              frequency: '1 daily sdfsdfbefore sleep',
-              quantity: '60',
-            },
-            {
-              name: 'gryyt',
-              strength: '40mg',
-              frequency: '1 dailsdfy before sleep',
-              quantity: '60',
-            },
-            {
-              name: 'dsfa',
-              strength: '40mg',
-              frequency: '1 fdaily before sleep',
-              quantity: '60',
-            },
-          ],
-        },
-      ],
+      pendingPrescriptions: {},
+      // pendingPrescriptions: [
+      //   {
+      //     prescriptionId: '2987329874',
+      //     pharmacyName: 'Good Pharmacy',
+      //     pharmacyId: '-MVk2EVqYH8dEPnTD5-U',
+      //     medication: [
+      //       {
+      //         name: 'Neutapine',
+      //         strength: '40mg',
+      //         frequency: '1 daily before sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'Neutapsdafdsfine',
+      //         strength: '40mg',
+      //         frequency: '1 daily sdfsdfbefore sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'Neutapinsdfe',
+      //         strength: '40mg',
+      //         frequency: '1 dailsdfy before sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'Neuffftapine',
+      //         strength: '40mg',
+      //         frequency: '1 fdaily before sleep',
+      //         quantity: '60',
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     prescriptionId: '874339874',
+      //     pharmacyName: 'KarmaPharma',
+      //     pharmacyId: '-MVk2skXtgZxNuiNuCYf',
+      //     medication: [
+      //       {
+      //         name: 'sadfdsaf',
+      //         strength: '40mg',
+      //         frequency: '1 daily before sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'jhh',
+      //         strength: '40mg',
+      //         frequency: '1 daily sdfsdfbefore sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'gryyt',
+      //         strength: '40mg',
+      //         frequency: '1 dailsdfy before sleep',
+      //         quantity: '60',
+      //       },
+      //       {
+      //         name: 'dsfa',
+      //         strength: '40mg',
+      //         frequency: '1 fdaily before sleep',
+      //         quantity: '60',
+      //       },
+      //     ],
+      //   },
+      // ],
     };
+  },
+  mounted() {
+    this.customerPrescriptionsRef = database.ref(`/prescriptions/${this.user.uid}`);
+    this.customerPrescriptionsRef.orderByChild('status').equalTo(STATUS_PENDING)
+      .on('value', (prescriptionsSnap) => {
+        const ps = {};
+        prescriptionsSnap.forEach((prescription) => {
+          ps[prescription.key] = prescription.val();
+        });
+        this.pendingPrescriptions = ps;
+      });
   },
   computed: {
     ...mapState({
@@ -237,7 +262,7 @@ export default {
     }),
   },
   methods: {
-    async approvePrescription(pharmacyId) {
+    async approvePrescription(pharmacyId, prescriptionId) {
       this.approveDialog = false;
       const pharmacyRef = database.ref(`/registered-pharmacies/${pharmacyId}`);
       const deliveryJobsRef = database.ref('/deliveryJobs');
@@ -260,6 +285,9 @@ export default {
           };
           deliveryJobsRef.push(newDeliveryJob)
             .then(() => {
+              this.customerPrescriptionsRef.child(prescriptionId).set({
+                status: STATUS_APPROVED,
+              });
               this.showPopUpAlert('success');
               done = true;
             })
