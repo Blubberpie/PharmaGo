@@ -34,6 +34,12 @@ import firebase from '../plugins/firebase';
 
 export default {
   name: 'ChatPage',
+  // props: {
+  //   roomID: {
+  //     type: String,
+  //     default: '',
+  //   },
+  // },
   components: {
     Chat,
   },
@@ -83,7 +89,14 @@ export default {
     },
     async setAllRooms() {
       this.roomIDs = await this.getAllUsersChatRooms();
-      this.setCurrentRoomID(this.roomIDs[0]);
+      const newID = this.$route.params.roomID;
+      if (newID) {
+        console.log('has params', newID);
+        this.setCurrentRoomID(newID);
+      } else {
+        console.log('no params');
+        this.setCurrentRoomID(this.roomIDs[0]);
+      }
       this.roomIDs.forEach(async (roomID) => {
         const member = await this.getOtherRoomMember(roomID);
         this.rooms.push({
@@ -109,8 +122,8 @@ export default {
       firebase
         .database()
         .ref(`messages/chatRooms/${roomID}/messages`)
-        .on('value', (dataSnapshot) => {
-          console.log(`theres an update in room: ${roomID}`, dataSnapshot.val());
+        .on('value', () => {
+          // console.log(`theres an update in room: ${roomID}`, dataSnapshot.val());
           this.$refs.chat.listAllMessages();
         });
     });

@@ -76,38 +76,6 @@ export default {
         this.listAllMessages();
       }
     },
-    async generateChatRoomID() {
-      const getRandomInt = function (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      };
-      const generate = function () {
-        const length = 8;
-        const timestamp = +new Date();
-        const ts = timestamp.toString();
-        const parts = ts.split('').reverse();
-        let id = '';
-        for (let i = 0; i < length; i += 1) {
-          const index = getRandomInt(0, parts.length - 1);
-          id += parts[index];
-        }
-        return id;
-      };
-
-      const id = generate();
-      const hasDup = await this.childExist('messages/chatUID', id);
-      if (hasDup) {
-        return this.generateChatRoomID();
-      }
-      return id;
-    },
-    async childExist(path, child) {
-      const snapshot = await firebase
-        .database()
-        .ref(path)
-        .once('value');
-      const hasChild = snapshot.hasChild(child);
-      return hasChild;
-    },
     async valueExist(path, value) {
       const snapshot = await firebase
         .database()
@@ -116,48 +84,11 @@ export default {
       const userData = snapshot.val();
       return value === userData;
     },
-
     updateChild(path, updates) {
       firebase
         .database()
         .ref(path)
         .update(updates);
-    },
-    async addChatRoom() {
-      // REQUIRED ANOTHER USER ID TO CREATE A CHAT ROOM
-      // const otherUser = '4XulcO49PARP3PzjhZBkwOeMZYM2';
-      const hasChild = await this.childExist(`user/${this.uid}`, 'chatRooms');
-      // console.log(hasChild);
-      const roomID = await this.generateChatRoomID();
-      // this.roomID = roomID;
-      if (!hasChild) {
-        firebase
-          .database()
-          .ref(`user/${this.uid}`)
-          .child('chatRooms')
-          .push(roomID); // add to
-      } else {
-        firebase
-          .database()
-          .ref(`user/${this.uid}/chatRooms`)
-          .push(roomID);
-      }
-      firebase
-        .database()
-        .ref('messages/chatRooms/')
-        .child(roomID)
-        .child('members')
-        .update({ member1: this.username, member2: 'guy3' }); // add members
-      firebase
-        .database()
-        .ref(`messages/chatRooms/${roomID}`)
-        .child('messages')
-        .child('message')
-        .push({
-          from: this.username,
-          text: 'This text is used to initialized firebase child',
-          timestamp: Date.now(),
-        }); // add messages
     },
     async listAllMessages() {
       const messages = [];
@@ -189,7 +120,6 @@ export default {
       // uid: (state) => state.auth.uid,
     }),
   },
-  created() {},
 };
 </script>
 
