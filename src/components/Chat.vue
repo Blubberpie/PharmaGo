@@ -5,7 +5,7 @@
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat </v-toolbar-title>
+              <v-toolbar-title>Chat {{ username }}</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
               <v-list class="logs">
@@ -96,10 +96,8 @@ export default {
       const id = generate();
       const hasDup = await this.childExist('messages/chatUID', id);
       if (hasDup) {
-        // console.log('chatUID already exists', id);
         return this.generateChatRoomID();
       }
-      // console.log("chatUID doesn't exists", id);
       return id;
     },
     async childExist(path, child) {
@@ -128,9 +126,8 @@ export default {
     async addChatRoom() {
       // REQUIRED ANOTHER USER ID TO CREATE A CHAT ROOM
       // const otherUser = '4XulcO49PARP3PzjhZBkwOeMZYM2';
-      // async addChatRoom(id, path) {
       const hasChild = await this.childExist(`user/${this.uid}`, 'chatRooms');
-      console.log(hasChild);
+      // console.log(hasChild);
       const roomID = await this.generateChatRoomID();
       // this.roomID = roomID;
       if (!hasChild) {
@@ -161,20 +158,15 @@ export default {
           text: 'This text is used to initialized firebase child',
           timestamp: Date.now(),
         }); // add messages
-      console.log(roomID);
     },
     async listAllMessages() {
       const messages = [];
-      // console.log(this.roomID);
       const val = await firebase
         .database()
         .ref(`messages/chatRooms/${this.roomID}/messages`)
         .orderByChild('timestamp')
-        // .limitToLast(2)
         .once('value')
         .then((snapshot) => snapshot.val());
-      // const messages = ref.orderke
-      // const messages = snapshot.val();
       Object.keys(val).forEach((key) => {
         messages.push(val[key]);
       });

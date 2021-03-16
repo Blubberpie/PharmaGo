@@ -77,7 +77,7 @@ export default {
           const obj = snapshot.val();
           members = Object.values(obj);
         });
-      const otherMember = members.filter((member) => member !== id)[0];
+      const otherMember = members.filter((member) => member !== this.username)[0];
       this.otherMember = otherMember;
       return otherMember;
     },
@@ -85,9 +85,9 @@ export default {
       this.roomIDs = await this.getAllUsersChatRooms();
       this.setCurrentRoomID(this.roomIDs[0]);
       this.roomIDs.forEach(async (roomID) => {
-        this.member = await this.getOtherRoomMember(roomID);
+        const member = await this.getOtherRoomMember(roomID);
         this.rooms.push({
-          member: this.member,
+          member,
           id: roomID,
         });
       });
@@ -103,11 +103,9 @@ export default {
   },
   async mounted() {
     this.uid = firebase.auth().currentUser.uid;
-    await this.setAllRooms();
     await this.setUsername();
-    console.log(this.username);
+    await this.setAllRooms();
     this.roomIDs.forEach((roomID) => {
-      console.log(`For: ${roomID}`);
       firebase
         .database()
         .ref(`messages/chatRooms/${roomID}/messages`)
@@ -123,9 +121,7 @@ export default {
     }),
   },
   watch: {},
-  updated() {
-    // this.setAllRooms();
-  },
+  updated() {},
 };
 </script>
 
