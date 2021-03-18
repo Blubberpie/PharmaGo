@@ -60,7 +60,6 @@ export default {
       this.drawer = true;
     },
     async getPharmacyUserId(key) {
-      console.log(key);
       const id = await database
         .ref(`registered-pharmacies/${key}/owner`)
         .once('value')
@@ -137,6 +136,11 @@ export default {
         .child(roomID)
         .child('members')
         .update({ member1: this.username, member2: this.currentPharmacyName });
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}`)
+        .child('membersID')
+        .update({ memberId1: this.uid, memberId2: pharmacyId });
       firebase
         .database()
         .ref(`messages/chatRooms/${roomID}`)

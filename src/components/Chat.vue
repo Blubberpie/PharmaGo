@@ -6,6 +6,8 @@
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
               <v-toolbar-title>Chat {{ username }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn color="secondary" @click="createPrescription">Create Prescription Form </v-btn>
             </v-toolbar>
             <v-card-text>
               <v-list class="logs">
@@ -103,6 +105,24 @@ export default {
       });
       this.messages = messages;
     },
+    async getOthersID() {
+      let membersID = {};
+      await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/membersID`)
+        .once('value')
+        .then((snapshot) => {
+          const obj = snapshot.val();
+          membersID = Object.values(obj);
+        });
+      const id = membersID.filter((member) => member !== this.uid)[0];
+      return id;
+    },
+    async createPrescription() {
+      const otherId = await this.getOthersID();
+      console.log(this.uid, otherId);
+      // this.$router.push({ name: 'chat', params: { uid } });
+    },
   },
   // mounted() {
   async mounted() {
@@ -117,7 +137,7 @@ export default {
     ...mapState({
       // userRole: (state) => state.auth.userRole,
       // username: (state) => state.auth.username,
-      // uid: (state) => state.auth.uid,
+      uid: (state) => state.auth.uid,
     }),
   },
 };
