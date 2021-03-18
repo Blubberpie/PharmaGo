@@ -144,6 +144,11 @@ export default {
       firebase
         .database()
         .ref(`messages/chatRooms/${roomID}`)
+        .child('pharmacyID')
+        .update({ pharmacyID: this.currentPharmacyId });
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${roomID}`)
         .child('messages')
         .push({
           from: this.username,
