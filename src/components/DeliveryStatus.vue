@@ -18,9 +18,14 @@
 export default {
   name: 'Status',
   components: {},
+  props: {
+    current: {
+      type: Number,
+    },
+  },
   data() {
     return {
-      current: 1,
+      // current: 1,
       steps: [
         { name: 'Finding Driver' },
         { name: 'Delivering' },

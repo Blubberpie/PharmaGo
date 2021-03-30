@@ -25,6 +25,9 @@
           <v-list-item v-if="userRole === 'Customer'" link to="/customer/pending-prescriptions">
             <v-list-item-title>Manage Pending Prescriptions</v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="userRole === 'Customer'" link to="/customer/status">
+            <v-list-item-title>Check Delivery Status</v-list-item-title>
+          </v-list-item>
           <v-list-item v-if="userRole === 'Pharmacy'" link to="/pharmacy/register-pharmacy">
             <v-list-item-title>Register a Pharmacy</v-list-item-title>
           </v-list-item>

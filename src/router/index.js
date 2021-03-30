@@ -8,7 +8,7 @@ const ChatPage = () => import('../views/ChatPage.vue');
 const CustomerMap = () => import('@/components/CustomerMap.vue');
 const Home = () => import('../views/Home.vue');
 const PrescriptionPage = () => import('../views/PrescriptionPage.vue');
-const DeliveryStatusPage = () => import('@/components/DeliveryStatus.vue');
+const DeliveryStatusPage = () => import('@/views/DeliveryStatuses.vue');
 const Driver = () => import('@/components/Driver.vue');
 const PharmacyRegistration = () => import('@/views/PharmacyRegistration.vue');
 const PendingPrescriptions = () => import('@/views/PendingPrescriptions.vue');
@@ -59,7 +59,7 @@ const routes = [
     },
   },
   {
-    path: '/status',
+    path: '/customer/status',
     name: 'status',
     component: DeliveryStatusPage,
     meta: {
