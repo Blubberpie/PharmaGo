@@ -1,33 +1,43 @@
 <template>
-  <div>
+  <div v-if="roomID">
     <v-container fluid fill-height>
       <v-layout>
         <v-flex xs12 sm9>
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
-              <v-toolbar-title>Chat</v-toolbar-title>
+              <v-toolbar-title>Chat {{ username }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn color="secondary" @click="createPrescription" v-if="userRole === 'Pharmacy'"
+                >Create Prescription Form
+              </v-btn>
             </v-toolbar>
             <v-card-text>
-              <v-list ref="chat" class="logs">
-                <div
-                  v-for="(item, index) in chat"
-                  :key="index"
-                  :class="[
-                    'd-flex flex-row align-center my-2',
-                    item.from == 'user' ? 'justify-end' : null,
-                  ]"
-                >
-                  <span v-if="item.from == 'user'" class="blue--text mr-3">{{ item.msg }}</span>
-                  <v-avatar :color="item.from == 'user' ? 'indigo' : 'red'" size="36">
-                    <span class="white--text">{{ item.from[0] }}</span>
-                  </v-avatar>
-                  <span v-if="item.from != 'user'" class="blue--text ml-3">{{ item.msg }}</span>
+              <v-list class="logs">
+                <div v-for="(item, index) in messages" :key="index">
+                  <div v-if="item">
+                    <div
+                      :class="[
+                        'd-flex flex-row align-center my-2',
+                        item.from == username ? 'justify-end' : null,
+                      ]"
+                    >
+                      <span v-if="item.from == username" class="blue--text mr-3">{{
+                        item.text
+                      }}</span>
+                      <v-avatar :color="item.from == username ? 'indigo' : 'red'" size="36">
+                        <!-- <span class="white--text">{{ item.from }}</span> -->
+                      </v-avatar>
+                      <span v-if="item.from != username" class="blue--text ml-3">{{
+                        item.text
+                      }}</span>
+                    </div>
+                  </div>
                 </div>
               </v-list>
             </v-card-text>
             <v-spacer></v-spacer>
             <v-card-actions class="card-actions">
-              <v-text-field v-model="msg" label="Message" single-line></v-text-field>
+              <v-text-field v-model="text" label="Message" single-line></v-text-field>
               <v-btn icon class="ml-4" @click="send"><v-icon>mdi-send</v-icon></v-btn>
             </v-card-actions>
           </v-card>
@@ -38,39 +48,119 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import firebase from '../plugins/firebase';
+
 export default {
   name: 'Chat',
   components: {},
+  props: ['roomID', 'username'],
   data() {
     return {
-      chat: [],
-      msg: null,
+      // roomID: '',
+      name: null,
+      showMessage: '',
+      messages: null,
+      text: null,
     };
   },
   methods: {
     send() {
-      if (this.msg !== null && this.msg !== '') {
-        this.chat.push({
-          from: 'user',
-          msg: this.msg,
-        });
-        this.msg = null;
-        this.addReply();
+      if (this.text !== null && this.text !== '') {
+        const message = {
+          text: this.text,
+          from: this.username,
+          timestamp: Date.now(),
+        };
+        firebase
+          .database()
+          .ref(`messages/chatRooms/${this.roomID}/messages`)
+          .push(message);
+        this.text = '';
+        // this.listAllMessages();
       }
     },
-    addReply() {
-      this.chat.push({
-        from: "user's name gpoes here",
-        msg: 'some respond text',
+    async valueExist(path, value) {
+      const snapshot = await firebase
+        .database()
+        .ref(path)
+        .once('value');
+      const userData = snapshot.val();
+      return value === userData;
+    },
+    updateChild(path, updates) {
+      firebase
+        .database()
+        .ref(path)
+        .update(updates);
+    },
+    async listAllMessages() {
+      const messages = [];
+      const val = await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/messages`)
+        .orderByChild('timestamp')
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      Object.keys(val).forEach((key) => {
+        messages.push(val[key]);
+      });
+      this.messages = messages;
+    },
+    async getOthersID() {
+      let membersID = {};
+      await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/membersID`)
+        .once('value')
+        .then((snapshot) => {
+          const obj = snapshot.val();
+          membersID = Object.values(obj);
+        });
+      const id = membersID.filter((member) => member !== this.uid)[0];
+      return id;
+    },
+    async getRoomPharmacyId() {
+      const id = await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/pharmacyID`)
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      console.log(id);
+      return id;
+    },
+    async createPrescription() {
+      const customerId = await this.getOthersID();
+      const pharmacyId = await this.getRoomPharmacyId();
+      const pharmacyName = this.username;
+      const roomId = this.roomID;
+      // console.log(this.uid, customerID);
+      this.$router.push({
+        name: 'prescription',
+        params: {
+          pharmacyId,
+          customerId,
+          pharmacyName,
+          roomId,
+        },
       });
     },
   },
+  // mounted() {
+  async mounted() {
+    await this.listAllMessages();
+  },
   watch: {
-    logs() {
-      setTimeout(() => {
-        this.$refs.chat.$el.scrollTop = this.$refs.chat.$el.scrollHeight;
-      }, 0);
+    roomID() {
+      this.listAllMessages();
     },
+  },
+  computed: {
+    ...mapState({
+      userRole: (state) => state.auth.userRole,
+      // username: (state) => state.auth.username,
+      uid: (state) => state.auth.uid,
+    }),
   },
 };
 </script>
