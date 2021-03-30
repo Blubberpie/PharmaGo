@@ -285,7 +285,7 @@ export default {
           };
           deliveryJobsRef.push(newDeliveryJob)
             .then(() => {
-              this.customerPrescriptionsRef.child(prescriptionId).set({
+              this.customerPrescriptionsRef.child(prescriptionId).update({
                 status: STATUS_APPROVED,
               });
               this.showPopUpAlert('success');

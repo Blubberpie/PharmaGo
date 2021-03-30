@@ -3,18 +3,6 @@
     <v-app-bar flat app>
       <v-toolbar-title>PharmaGo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="ma-5" text to="/chat">
-        Chat Page
-      </v-btn>
-      <v-btn v-if="userRole === 'Customer'" class="ma-5" text to="/customer/map">
-        Pick a Pharmacy
-      </v-btn>
-      <v-btn v-if="userRole === 'Customer'" class="ma-5" text to="/customer/pending-prescriptions">
-        Manage Pending Prescriptions
-      </v-btn>
-      <v-btn v-if="userRole === 'Pharmacy'" class="ma-5" text to="/pharmacy/register-pharmacy">
-        Register a Pharmacy
-      </v-btn>
       <v-btn class="ma-5" text to="/">Home</v-btn>
       <v-menu
         transition="slide-y-transition"
@@ -30,7 +18,21 @@
             <v-icon>mdi-chevron-down</v-icon>
           </v-btn>
         </template>
-        <v-list>
+        <v-list v-if="tool.title === 'Service'">
+          <v-list-item v-if="userRole === 'Customer'" link to="/customer/map">
+            <v-list-item-title>Pick a Pharmacy</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="userRole === 'Customer'" link to="/customer/pending-prescriptions">
+            <v-list-item-title>Manage Pending Prescriptions</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="userRole === 'Pharmacy'" link to="/pharmacy/register-pharmacy">
+            <v-list-item-title>Register a Pharmacy</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="userRole === 'Customer' || userRole === 'Pharmacy'" link to="/chat">
+            <v-list-item-title>Manage Ongoing Chats</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-list v-else>
           <v-list-item v-for="(item, index) in items" :key="index" link>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
