@@ -34,6 +34,9 @@
           <v-list-item v-if="userRole === 'Customer' || userRole === 'Pharmacy'" link to="/chat">
             <v-list-item-title>Manage Ongoing Chats</v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="userRole === 'Driver'" link to="/driver">
+            <v-list-item-title>Look for Delivery Jobs</v-list-item-title>
+          </v-list-item>
         </v-list>
         <v-list v-else>
           <v-list-item v-for="(item, index) in items" :key="index" link>

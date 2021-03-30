@@ -47,7 +47,7 @@ const routes = [
     name: 'chat',
     component: ChatPage,
     meta: {
-      requiredAuthentication: true, // CHANGE LATER
+      requiredAuthentication: true,
     },
   },
   {
@@ -55,7 +55,8 @@ const routes = [
     name: 'prescription',
     component: PrescriptionPage,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true,
+      userRole: 'Pharmacy',
     },
   },
   {
@@ -63,7 +64,8 @@ const routes = [
     name: 'status',
     component: DeliveryStatusPage,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true,
+      userRole: 'Customer',
     },
   },
   {
@@ -76,11 +78,12 @@ const routes = [
     },
   },
   {
-    path: '/driver', // Rename?
+    path: '/driver',
     name: 'driver',
     component: Driver,
     meta: {
-      requiredAuthentication: false, // CHANGE LATER
+      requiredAuthentication: true,
+      userRole: 'Driver',
     },
   },
   {
