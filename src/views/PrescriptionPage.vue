@@ -41,11 +41,7 @@
             <v-card-title>Add a Drug</v-card-title>
             <v-card-text>
               <v-form ref="addDrugForm" v-model="addDrugFormIsValid">
-                <v-text-field
-                  v-model="editItem.name"
-                  label="Drug name"
-                  :rules="formRules"
-                />
+                <v-text-field v-model="editItem.name" label="Drug name" :rules="formRules" />
                 <v-text-field
                   v-model="editItem.strength"
                   label="Strength"
@@ -68,7 +64,7 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-              <v-spacer/>
+              <v-spacer />
               <v-btn color="secondary" @click="add" :disabled="!addDrugFormIsValid">
                 add
               </v-btn>
@@ -118,8 +114,7 @@ const database = firebase.database();
 
 export default {
   name: 'PrescriptionPage',
-  components: {
-  },
+  components: {},
   data() {
     return {
       dialog: false,
@@ -130,12 +125,8 @@ export default {
       pharmacyName: 'Good Pharmacy', // CHANGE!!!
       pharmacyId: '-MVk2EVqYH8dEPnTD5-U', // CHANGE LATER!!!
       customerId: 'eSfIbpVKbPZVGVVaYeGdZ3ZicsV2', // CHANGE
-      formRules: [
-        (v) => !!v || 'Cannot be empty',
-      ],
-      emailRules: [
-        (v) => /[a-zA-z0-9._]+@[a-zA-Z]+\.[a-zA-z]{2,4}/.test(v) || 'Invalid email',
-      ],
+      formRules: [(v) => !!v || 'Cannot be empty'],
+      emailRules: [(v) => /[a-zA-z0-9._]+@[a-zA-Z]+\.[a-zA-z]{2,4}/.test(v) || 'Invalid email'],
       formIsValid: true,
       addDrugFormIsValid: true,
       headers: [
@@ -157,6 +148,11 @@ export default {
   created() {
     this.prescriptionsRef = database.ref(`/prescriptions/${this.customerId}`);
   },
+  mounted() {
+    this.pharmacyName = this.$route.params.pharmacyName; // CHANGE!!!
+    this.pharmacyId = this.$route.params.pharmacyId; // CHANGE LATER!!!
+    this.customerId = this.$route.params.customerId;
+  },
   methods: {
     sendToCustomer() {
       const newPrescription = {
@@ -169,7 +165,18 @@ export default {
         prescriberEmail: this.prescriberEmail,
         status: 1, // 1 = pending, 2 = approved, 3 = rejected
       };
-      this.prescriptionsRef.push(newPrescription)
+      const message = {
+        text: 'Prescription has been send to you! Please check your Pending Prescription!',
+        from: this.pharmacyName,
+        timestamp: Date.now(),
+      };
+      firebase
+        .database()
+        .ref(`messages/chatRooms/${this.$route.params.roomId}/messages`)
+        .push(message);
+      this.text = '';
+      this.prescriptionsRef
+        .push(newPrescription)
         .then(() => {
           this.$router.push({ name: 'home' });
         })

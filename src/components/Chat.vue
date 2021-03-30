@@ -6,6 +6,10 @@
           <v-card justify="left" height="700px">
             <v-toolbar dark color="primary darken-1">
               <v-toolbar-title>Chat {{ username }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn color="secondary" @click="createPrescription" v-if="userRole === 'Pharmacy'"
+                >Create Prescription Form
+              </v-btn>
             </v-toolbar>
             <v-card-text>
               <v-list class="logs">
@@ -73,7 +77,7 @@ export default {
           .ref(`messages/chatRooms/${this.roomID}/messages`)
           .push(message);
         this.text = '';
-        this.listAllMessages();
+        // this.listAllMessages();
       }
     },
     async valueExist(path, value) {
@@ -103,6 +107,44 @@ export default {
       });
       this.messages = messages;
     },
+    async getOthersID() {
+      let membersID = {};
+      await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/membersID`)
+        .once('value')
+        .then((snapshot) => {
+          const obj = snapshot.val();
+          membersID = Object.values(obj);
+        });
+      const id = membersID.filter((member) => member !== this.uid)[0];
+      return id;
+    },
+    async getRoomPharmacyId() {
+      const id = await firebase
+        .database()
+        .ref(`messages/chatRooms/${this.roomID}/pharmacyID`)
+        .once('value')
+        .then((snapshot) => snapshot.val());
+      console.log(id);
+      return id;
+    },
+    async createPrescription() {
+      const customerId = await this.getOthersID();
+      const pharmacyId = await this.getRoomPharmacyId();
+      const pharmacyName = this.username;
+      const roomId = this.roomID;
+      // console.log(this.uid, customerID);
+      this.$router.push({
+        name: 'prescription',
+        params: {
+          pharmacyId,
+          customerId,
+          pharmacyName,
+          roomId,
+        },
+      });
+    },
   },
   // mounted() {
   async mounted() {
@@ -115,9 +157,9 @@ export default {
   },
   computed: {
     ...mapState({
-      // userRole: (state) => state.auth.userRole,
+      userRole: (state) => state.auth.userRole,
       // username: (state) => state.auth.username,
-      // uid: (state) => state.auth.uid,
+      uid: (state) => state.auth.uid,
     }),
   },
 };
