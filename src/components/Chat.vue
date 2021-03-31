@@ -126,8 +126,7 @@ export default {
         .ref(`messages/chatRooms/${this.roomID}/pharmacyID`)
         .once('value')
         .then((snapshot) => snapshot.val());
-      console.log(id);
-      return id;
+      return id.pharmacyID;
     },
     async createPrescription() {
       const customerId = await this.getOthersID();
