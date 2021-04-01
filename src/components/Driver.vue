@@ -302,5 +302,3 @@ export default {
   background: rgba(192, 12, 12, 0.753);
 }
 </style>
-
-

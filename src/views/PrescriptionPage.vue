@@ -145,13 +145,11 @@ export default {
       },
     };
   },
-  created() {
-    this.prescriptionsRef = database.ref(`/prescriptions/${this.customerId}`);
-  },
   mounted() {
     this.pharmacyName = this.$route.params.pharmacyName; // CHANGE!!!
     this.pharmacyId = this.$route.params.pharmacyId; // CHANGE LATER!!!
     this.customerId = this.$route.params.customerId;
+    this.prescriptionsRef = database.ref(`/prescriptions/${this.customerId}`);
   },
   methods: {
     sendToCustomer() {
