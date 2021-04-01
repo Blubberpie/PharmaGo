@@ -1,73 +1,24 @@
 <template>
     <v-app class=''>
         <v-container class=''>
+          <!-- {{location.coords.latitude}} -->
           <!-- {{deliveryJob}} -->
           {{computeDistance()}}
-          <!-- {{inRange()}} -->
-          <!-- {{pharmacy}} -->
             <v-layout row align-center justify-center class='mt-8'>
                 <v-flex class='' height=''>
-                   <!-- {{ location.coords.latitude }}, {{ location.coords.longitude}} -->
-                   <!-- {{getAddress(location.coords.latitude, location.coords.longitude)}} -->
                     <v-card rippled class='flexcard white mx-auto' elevation="3"
            rounded="lg">
                     <v-card flat style="overflow:hidden;" class='teal lighten-5' rounded="lg">
                         <v-row class='mx-0 my-0'
                         justify="center" align="center" style="overflow:hidden;">
                         <v-col cols='3'>
-                          <!-- {{inRange}} -->
-                          <!-- <h3 class='ml-3 grey--text text--darke
-                          n-3'>Job Search Platform</h3> -->
                             <v-img class='ml-5'
                             max-height="150"
                             max-width="150"
                             src="https://i.pinimg.com/originals/8b/94/0c/8b940c908705e3fb2644ffc12418eefb.png"
                             ></v-img>
                         </v-col>
-                                 <!-- <v-flex class='ma-10 red'> -->
                                      <v-col class=' '>
-                                       <!-- <v-card-text>
-      <v-chip-group
-        v-model="selection"
-        active-class="deep-purple accent-4 white--text"
-        column
-      >
-        <v-chip filter>less than 5 km</v-chip>
-
-        <v-chip filter>5 - 10 km</v-chip>
-
-        <v-chip filter>10 - 25 km</v-chip>
-
-        <v-chip filter>25 - 50 km</v-chip>
-
-        <v-chip filter>50 - 100 km</v-chip>
-
-        <v-chip  filter>more than 100 km</v-chip>
-      </v-chip-group>
-    </v-card-text> -->
-                                     <!-- <v-card class='' flat rounded="lg" max-width="600"
-                                     max-height="80"
-                                     >
-                                        <v-flex class='ma-10'  justify-center>
-                                 <v-row >
-                                     <v-col cols='8' class=''>
-                                 <v-text-field flat solo prepend-inner-icon="mdi-account-search"
-                                 label="Job title" class='mx-auto mt-1'
-                                  ></v-text-field></v-col>
-                                  <v-divider  class="mb-6"
-  vertical
-></v-divider>
-                                <v-col cols='3' class=' mb-6'>
-                                  <v-btn large depressed class='white--text ml-8
-                                   teal lighten-2'>Find Job</v-btn>
-                                  </v-col>
-                                 </v-row>
-                                        </v-flex>
-                                     </v-card> -->
-                                 <!-- </v-flex> -->
-                            <!-- <h2 class='text-center'>hi</h2>
-                            <p>hi</p>
-                            <p>hi</p> -->
                              </v-col>
                         </v-row>
                     </v-card>
@@ -94,9 +45,6 @@
         <v-chip  small> > 100 km</v-chip>
       </v-chip-group>
     </v-card-text>
-                            <!-- <h3 class='grey--text text--darken-2'>Distance</h3> -->
-                            <!-- <h3 class='grey--text text--darken-2'>Distance</h3> -->
-                            <!-- <h3 class='grey--text text--darken-2'>Distance</h3> -->
                               </v-flex>
                             </v-col>
                             <v-col cols='9'>
@@ -109,16 +57,11 @@
                               </v-btn>
                               </v-layout>
                               </v-row>
-                              <!-- <p  class='grey--text text--darken-2 text-right'>Sort by </p> -->
                               <v-row class=''>
                                 <v-col cols='4' v-for="(pharmacy, index)
                                  in inRange" :key="(pharmacy.address,index)">
                               <v-card flat height="315px"
                                class='mt-3'>
-                                <!-- <v-divider ></v-divider> -->
-                                <!-- <v-row align="center" justify="center"> -->
-                                  <!-- <v-col cols='3' class='' align-self=""> -->
-                                    <!-- <v-layout align-center justify-center> -->
                                       <v-row class=''>
                                         <v-col>
                                     <v-img class='ml-6 mt-3' v-if="pharmacy.logo"
@@ -136,28 +79,14 @@
                              class='text-right '>
                              {{pharmacy.distance}} km</p></v-col>
                                       </v-row>
-                                      <!-- <v-card-text class='mt-2'> -->
-                                    <!-- </v-layout> -->
-                                  <!-- </v-col> -->
-                                  <!-- <v-col cols='5' class=''> -->
                                     <v-row class='ml-3 mb-2  font-weight-medium'>
                                     <div class='text-subtitle-1 grey--text text--darken-2'>
                                       {{getName(pharmacy.pharmacyId)}}
-                                      <!-- {{getName2}} -->
                                       </div>
                                     </v-row>
-                                    <!-- <br> -->
-                                    <!-- <v-row class='red'> -->
                                     <div class='text-body-1 grey--text text--darken-2 mx-3'>
                                       {{getDescription(pharmacy.pharmacyId)}}2
                                       </div>
-                                      <!-- </v-card-text> -->
-                                    <!-- </v-row> -->
-                                  <!-- </v-col> -->
-                                  <!-- <v-col cols='2'> -->
-                                    <!-- <h4 class='grey--text text--darken-2'>Estimated time -->
-                                    <!-- </h4> -->
-                                    <!-- <p class='grey--text text--darken-2'>{{task.time}}</p> -->
                                     <v-row class='ml-1' style="position: absolute; bottom: 0;">
                                       <v-col class=''>
                                         <v-card-actions>
@@ -166,7 +95,6 @@
                                    >Apply Now</v-btn>
                                         </v-card-actions>
                                       </v-col>
-                                    <!-- <v-spacer></v-spacer> -->
                                     <v-col class=' pt-5 '>
                                     <v-dialog max-width="600px">
                 <template v-slot:activator="{ on }">
@@ -175,21 +103,17 @@
                                     <v-icon color='red' left>
         mdi-map-marker
       </v-icon>Location
-                      <!-- <v-icon color="white">add_box</v-icon> -->
-                      <!-- <span class='white--text'>Create a card</span> -->
                   </v-btn>
                   </template>
                   <v-card>
                     <v-card-title class='grey--text text--darken-2'>
                       Pharmacy's Address
-                        <!-- <h2>Add a New Item </h2> -->
                     </v-card-title>
                     <v-card-text>
                       {{pharmacy.fromAddress}}
                     </v-card-text>
                     <v-card-title class='grey--text text--darken-2'>
                       Customer's Address
-                        <!-- <h2>Add a New Item </h2> -->
                     </v-card-title>
                     <v-card-text>
                       {{pharmacy.toAddress}}
@@ -197,39 +121,13 @@
                   </v-card>
               </v-dialog>
                                     </v-col>
-                                    <!-- <v-col>
-                                      <v-card-actions>
-                                    <v-btn  small class='grey--text text--darken-2 grey
-                                    lighten-2'
-                                     depressed>Location</v-btn>
-                                      </v-card-actions>
-                                    </v-col> -->
                                     </v-row>
-                                  <!-- </v-col> -->
-                                  <!-- <v-col cols='2'> -->
-                                    <!-- <div id="chips-container">
-                                    <v-chip :class="task.status" class="
-                                     white--text caption my-2`">{{task.status}}</v-chip>
-                                    </div> -->
-                                    <!-- <h4 class='grey--text text--darken-2'>Status</h4> -->
-                                    <!-- <p class='grey--text text--darken-2'>
-                                      {{task.status}}</p> -->
-                                  <!-- </v-col> -->
-                                  <!-- <v-divider></v-divider> -->
-                                <!-- </v-row> -->
-                                <!-- <v-divider></v-divider> -->
                               </v-card>
                                 </v-col>
                               </v-row>
-                              <!-- <v-divider></v-divider> -->
-                            <!-- <p>hi</p>
-                            <p>hi</p> -->
                             </v-col>
                         </v-row>
                     </v-card>
-                    <!-- {{this.distances}} -->
-                    <!-- {{distances}} -->
-                    <!-- {{deliveryJob}} -->
                 </v-flex>
             </v-layout>
         </v-container>
@@ -253,22 +151,23 @@ export default {
       distanceRules: [0, 5, 10, 25, 50, 100],
       selection: 2,
       error: null,
-      // distanceDriver: {},
       deliveryJob: {},
       deliveryJobRef: null,
       pharmacy: {},
       pharmacyRef: null,
-      // distanceDriverRef: null,
     };
   },
   created() {
     this.deliveryJobRef = database.ref('deliveryJobs');
     this.pharmacyRef = database.ref('registered-pharmacies');
   },
-  mounted() {
-    this.deliveryJobRef.on('value', (snapshot) => {
+  async mounted() {
+    // this.getLocation();
+    await this.deliveryJobRef.on('value', (snapshot) => {
+      this.getLocation();
       if (snapshot !== undefined) {
         this.deliveryJob = snapshot.val();
+        this.computeDistance();
       }
     });
     this.pharmacyRef.on('value', (snapshot) => {
@@ -276,43 +175,19 @@ export default {
         this.pharmacy = snapshot.val();
       }
     });
-    this.getLocation();
   },
   computed: {
-    // getName2() {
-    //   // const registeredPharmacies = database.ref('registered-pharmacies');
-    //   this.pharmacyRef.transaction((snapshot) => {
-    //     console.log(snapshot);
-    //     // Object.entries(snapshot).forEach((pharmacyKey) => {
-    //     // console.log(key);
-    //     // console.log(pharmacyKey[0]);
-    //     // console.log(key[0]);
-    //     // if (pharmacyKey[0] === '1') {
-    //     //   // storedDescription = pharmacyKey[1].description;
-    //     // }
-    //     // });
-    //   });
-    //   return 'hi';
-    // },
     sortByDistance() {
       return Object.fromEntries(Object.entries(this.deliveryJob)
         .sort((a, b) => (a[1].distance < b[1].distance ? -1 : 1)));
     },
     inRange() {
-      // console.log('hi');
-      // // const before = this.distanceRules[this.selection - 1];
-      // // const after = this.distanceRules[this.selection];
-      // console.log(Object.fromEntries(Object.entries(this.deliveryJob)
-      // .filter(this.constraint)));
       return Object.fromEntries(Object.entries(this.deliveryJob)
         .filter(this.constraint));
-      // a[1].temp_relative_distance > 10
-      //  && a[1].temp_relative_distance < 12)));
     },
   },
   methods: {
     updateStatus(index) {
-      // console.log(index);
       this.deliveryJobRef.transaction((snapshot) => {
         Object.entries(snapshot).forEach((key) => {
           if (key[0] === index) {
@@ -331,18 +206,6 @@ export default {
         }
       });
       return data;
-      // this.pharmacyRef.transaction((snapshot) => console.log(snapshot));
-      // let data = null;
-      // const registeredPharmacies = database.ref('registered-pharmacies');
-      // registeredPharmacies.transaction((snapshot) => {
-      //   Object.entries(snapshot).forEach((key) => {
-      //     console.log(key);
-      //     if (key[0] === pharmacy) {
-      //       data = key[1].description;
-      //     }
-      //   });
-      // });
-      // return p;
     },
     getName(p) {
       let data = null;
@@ -352,49 +215,18 @@ export default {
         }
       });
       return data;
-      // return data;
     },
     computeDistance() {
-      // this.getLocation();
-      // console.log('hi from compute');
-      // const registeredPharmacies = database.ref('registered-pharmacies');
-      // registeredPharmacies.transaction((snapshot) => {
-      //   console.log(snapshot);
-      //   // Object.entries(snapshot).forEach((pharmacyKey) => {
-      //   // console.log(key);
-      //   // console.log(pharmacyKey[0]);
-      //   // console.log(key[0]);
-      //   // if (pharmacyKey[0] === '1') {
-      //   //   // storedDescription = pharmacyKey[1].description;
-      //   // }
-      //   // });
-      // });
+      // console.log(this.location.coords.latitude);
+      // console.log(this.location.coords.longitude);
       Object.entries(this.deliveryJob).forEach((key) => {
-        // const name = null;
-        const storedDescription = null;
-        // registeredPharmacies.transaction((snapshot) => {
-        //   Object.entries(snapshot).forEach((pharmacyKey) => {
-        //     // console.log(key);
-        //     console.log(pharmacyKey[0]);
-        //     console.log(key[0]);
-        //     if (pharmacyKey[0] === key[0]) {
-        //       storedDescription = pharmacyKey[1].description;
-        //     }
-        //   });
-        // });
-        // console.log(key[1]);
-        // // console.log(typeof key[1]);
         const storedDistance = this.CalculateDistance(key[1].fromLocation.lat,
           key[1].fromLocation.lng);
-        // console.log(storedDistance);
-        // // console.log(key[1].fromLocation.lat);
+        console.log(storedDistance);
         key[1].distance = storedDistance;
-        key[1].description = storedDescription;
-        key[1].hi = 1;
       });
     },
     getLocation() {
-      // console.log('hi');
       if (!('geolocation' in navigator)) {
         this.error = 'Geolocation is not available';
         return;
@@ -405,8 +237,8 @@ export default {
         this.error = err.message;
       });
     },
-    getAddress(lat, long) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}
+    async getAddress(lat, long) {
+      await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}
       &key=AIzaSyC8oXnYPjm2GihFIjDsFt9iwDfCflvcRos`).then((response) => {
         if (response.data.error_message) {
           console.log(response.data.error_message);
@@ -424,7 +256,6 @@ export default {
       const lat2 = this.location.coords.latitude * (Math.PI / 180);
       const deltalat = (lat - this.location.coords.latitude) * (Math.PI / 180);
       const deltalng = (lng - this.location.coords.longitude) * (Math.PI / 180);
-
       const a = Math.sin(deltalat / 2) * Math.sin(deltalat / 2)
                 + Math.cos(lat1) * Math.cos(lat2)
                 * Math.sin(deltalng / 2) * Math.sin(deltalng / 2);
@@ -436,6 +267,11 @@ export default {
       this.deliveryJob = this.sortByDistance;
     },
     constraint(d) {
+      // const selection = this.selection - 1;
+      console.log(this.selection);
+      console.log(this.distanceRules[this.selection]);
+      console.log(this.distanceRules[this.selection - 1]);
+      console.log(d[1].distance);
       if (d[1].status !== 1) {
         return false;
       }
@@ -445,8 +281,8 @@ export default {
       } if (this.selection === 5) {
         return (d[1].distance >= this.distanceRules[this.selection]);
       }
-      return (d[1].distance >= this.distanceRules[this.selection - 1]
-          && d[1].distance <= this.distanceRules[this.selection]);
+      return (d[1].distance >= this.distanceRules[this.selection]
+          && d[1].distance <= this.distanceRules[this.selection + 1]);
     },
   },
 };
@@ -466,3 +302,5 @@ export default {
   background: rgba(192, 12, 12, 0.753);
 }
 </style>
+
+
